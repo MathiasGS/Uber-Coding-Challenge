@@ -1,4 +1,5 @@
 var restify = require("restify");
+var ClientFileHandler_1 = require('./handlers/ClientFileHandler');
 var Server = (function () {
     function Server() {
         var _this = this;
@@ -15,16 +16,7 @@ var Server = (function () {
         });
     }
     Server.prototype.registerHandlers = function () {
-        /*this.server.get("/sync", Handlers.SyncHandler.getHandler);
-        this.server.post("/sync",  restify.jsonBodyParser(), Handlers.SyncHandler.postHandler);
-        */
-        this.server.get("/", restify.serveStatic({
-            directory: './client',
-            file: 'index.html'
-        }));
-        this.server.get("/client/.*", restify.serveStatic({
-            directory: './client'
-        }));
+        this.server.get("/(.*)?", ClientFileHandler_1.default);
     };
     return Server;
 })();

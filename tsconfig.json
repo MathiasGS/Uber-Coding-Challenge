@@ -7,7 +7,8 @@
         "sourceMap": true,
         "module": "commonjs",
         "outDir": "build",
-        "watch": false
+        "watch": false,
+        "rootDir": "./server"
     },
     "exclude": [
         "node_modules"

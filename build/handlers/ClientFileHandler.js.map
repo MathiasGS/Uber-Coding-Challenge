@@ -1,0 +1,1 @@
+{"version":3,"file":"ClientFileHandler.js","sourceRoot":"","sources":["../../server/handlers/ClientFileHandler.ts"],"names":["getHandler"],"mappings":"AAAA,IAAI,OAAO,GAAG,OAAO,CAAC,SAAS,CAAC,CAAC;AAKjC,oBAAmC,GAAQ,EAAE,GAAQ,EAAE,IAAS;IAC/DA,MAAMA,CAACA,OAAOA,CAACA,WAAWA,CAACA;QAC1BA,SAASA,EAAEA,UAAUA;QACrBA,OAAOA,EAAEA,YAAYA;KACrBA,CAACA,CAACA;AACJA,CAACA;AALD,4BAKC,CAAA"}
