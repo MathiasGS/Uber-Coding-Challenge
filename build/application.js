@@ -1,5 +1,4 @@
 var restify = require("restify");
-var ClientFileHandler_1 = require('./handlers/ClientFileHandler');
 var Server = (function () {
     function Server() {
         var _this = this;
@@ -16,7 +15,10 @@ var Server = (function () {
         });
     }
     Server.prototype.registerHandlers = function () {
-        this.server.get("/(.*)?", ClientFileHandler_1.default);
+        this.server.get("/.*", restify.serveStatic({
+            directory: './client',
+            default: 'index.html'
+        }));
     };
     return Server;
 })();

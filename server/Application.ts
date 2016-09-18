@@ -10,13 +10,13 @@ import ClientFileHandler from './handlers/ClientFileHandler'
  */
 export class Server {
 	// The typing for restify is not very good, hence we accept any type for now
-	private server : any;
+	private server: any;
 
-	constructor(){
+	constructor() {
 		var options = {
 			name: 'Uber Code Challenge Server'
 		};
-		
+
 		this.server = restify.createServer(options);
 
 		this.server.use(restify.CORS());
@@ -30,8 +30,13 @@ export class Server {
 		});
 	}
 
-	private registerHandlers(){
+	private registerHandlers() {
+
+		
 		// Client handlers
-		this.server.get("/(.*)?", ClientFileHandler);
+		this.server.get("/.*", restify.serveStatic({
+			directory: './client',
+			default: 'index.html'
+		}));
 	}
 }

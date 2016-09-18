@@ -1,0 +1,7 @@
+{
+  "name": "Uber Coding Challenge",
+  "short_name": "Uber Coding Challenge",
+  "description": "Uber Coding Challenge application.",
+  "start_url": "/",
+  "display": "standalone"
+}
