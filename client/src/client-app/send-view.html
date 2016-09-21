@@ -1,0 +1,32 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="send-view">
+  <template>
+    <input name="toName" type="text" placeholder="Recipient name" value="{{toName::input}}" />
+    <input name="to" type="text" placeholder="Recipient address" value="{{to::input}}" />
+    <input name="subject" type="text" placeholder="Subject" value="{{subject::input}}" />
+    <textarea name="body" value="{{body::input}}"></textarea>
+    <button on-tap="doSend">Send!</button>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'send-view',
+
+      properties: {
+        route: Object,
+        to: String,
+        toName: String,
+        subject: String,
+        body: String
+      },
+
+      doSend: function(){
+        route.path = "test";
+        debugger;
+      }
+
+    });
+  </script>
+</dom-module>

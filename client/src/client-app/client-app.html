@@ -1,4 +1,9 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+
+<link rel="import" href="send-view.html">
+<link rel="import" href="status-view.html">
 
 <dom-module id="client-app">
   <template>
@@ -7,21 +12,23 @@
         display: block;
       }
     </style>
-    <h2>Hello [[prop1]]</h2>
+
+    <app-location route="{{route}}" use-hash-as-path></app-location>
+    <app-route route="{{route}}" pattern=":uuid" data="{{data}}" active="{{statusViewActive}}">
+      <template is="dom-if" if="{{statusViewActive}}">
+        <status-view route="{{route}}" uuid="{{data.uuid}}"></status-view>
+      </template>
+    </app-route>
+
+    <template is="dom-if" if="{{!statusViewActive}}">
+      <send-view route="{{route}}"></send-view>
+    </template>
+
   </template>
 
   <script>
     Polymer({
-
       is: 'client-app',
-
-      properties: {
-        prop1: {
-          type: String,
-          value: 'client-app',
-        },
-      },
-
     });
   </script>
 </dom-module>
