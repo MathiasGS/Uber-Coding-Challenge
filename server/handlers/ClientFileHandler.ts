@@ -1,12 +1,11 @@
-var restify = require("restify");
+let restify = require("restify");
 
 /**
  * Handler for client files. Serves static files.
  */
-export default function getHandler(req: any, res: any, next: any) {
-	console.log()
-	return restify.serveStatic({
-		directory: './client',
-		default: 'index.html'
-	});
-}
+let getHandler = restify.serveStatic({
+	default: "index.html",
+	directory: "./client",
+});
+
+export default getHandler;

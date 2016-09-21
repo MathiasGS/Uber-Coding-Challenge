@@ -8,8 +8,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "tsc",
-    "start": "node build/index.js"
+    "build": "tsc",
+    "start": "nodemon build/server/index.js",
+    "lint": "tslint **/*.ts"
   },
   "author": "Mathias Grund Sørensen <mathias.grund@gmail.com>",
   "license": "MIT",
@@ -20,6 +21,7 @@
     "mocha": "^3.0.2",
     "nodemon": "^1.10.2",
     "polymer-cli": "^0.16.0",
+    "typescript": "^1.8.10",
     "typings": "^1.3.3"
   }
 }

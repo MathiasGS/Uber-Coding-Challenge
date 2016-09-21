@@ -1,12 +1,13 @@
 {
   "extends": "tslint:latest",
   "rules": {
-    "interface-name": false,
+    "interface-name": true,
     "max-line-length": [true, 140],
     "member-ordering": [true,
       "public-before-private",
       "static-before-instance",
       "variables-before-functions"
-    ]
+    ],
+    "indent": [true, "spaces"]
   }
 }

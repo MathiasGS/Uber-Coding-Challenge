@@ -1,0 +1,1 @@
+{"version":3,"file":"SendHandler.js","sourceRoot":"","sources":["../../../server/handlers/SendHandler.ts"],"names":[],"mappings":";AAAA,IAAI,OAAO,GAAG,OAAO,CAAC,SAAS,CAAC,CAAC;AAKjC,qBAAoC,GAAQ,EAAE,GAAQ,EAAE,IAAS;IAC7D,GAAG,CAAC,IAAI,CAAC;QACL,OAAO,EAAE,UAAU;QACnB,SAAS,EAAE,UAAU;QACrB,IAAI,EAAE,MAAM;KACf,CAAC,CAAC;AACP,CAAC;AAND;6BAMC,CAAA"}

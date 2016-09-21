@@ -1,3 +1,9 @@
-import { Server } from './Application'
+import Server from "./Application";
+import SendGridAdapter from "./mailService/adapters/SendGridAdapter";
+import Worker from "./mailService/Worker";
 
-var app = new Server();
+const worker = new Worker([
+    new SendGridAdapter(),
+]);
+
+const app = new Server(worker);
