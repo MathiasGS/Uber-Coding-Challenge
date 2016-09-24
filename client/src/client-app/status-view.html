@@ -3,14 +3,13 @@
 
 <dom-module id="status-view">
   <template>
-    <iron-ajax
-      auto
-      url="https://www.googleapis.com/youtube/v3/search"
-      params='{"part":"snippet", "q":"polymer", "key": "YOUTUBE_API_KEY", "type": "video"}'
-      handle-as="json"
-      on-response="updateStatus"
-      debounce-duration="300"
-      loading="loading"></iron-ajax>
+    <iron-ajax id="statusRequest" url="[[apiRequest()]]" handle-as="json" on-response="updateStatus" on-error="requestError" loading="loading"></iron-ajax>
+
+    <template is="dom-if" if="[[status]]">
+      <h1>[[status]]</h1>
+      <small>[[timestamp]]</small>
+    </template>
+
     <paper-button raised on-tap="home" class="indigo">Send another mail!</paper-button>
   </template>
 
@@ -21,17 +20,45 @@
 
       properties: {
         route: Object,
-        uuid: String
+        uuid: String,
+        status: String,
+        timestamp: Date
+      },
+      
+      ready: function(){
+        this.$.statusRequest.generateRequest();
+      },
+
+      apiRequest: function(){
+        return "/api/v1/status/".concat(this.uuid);
       },
 
       home: function(){
         this.set("route.path", "");
       },
 
-      updateStatus: function(){
+      updateStatus: function(event){
+        this.status = event.detail.response.status;
+        this.timestamp = new Date(event.detail.response.timestamp);
 
+        // Repeat request every 5 seconds to poll status update
+        if(this.status === "pending"){
+          this.async(function() {
+            this.$.statusRequest.generateRequest();
+          }, 5000);
+        }
+      },
+
+      requestError: function(){
+        this.status = "error fetching status... retrying in 5 seconds.";
+
+        // Retry request in 5 seconds
+        if(this.status === "pending"){
+          this.async(function() {
+            this.$.statusRequest.generateRequest();
+          }, 5000);
+        }
       }
-
     });
   </script>
 </dom-module>

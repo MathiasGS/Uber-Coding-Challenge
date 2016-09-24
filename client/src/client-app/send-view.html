@@ -1,15 +1,16 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-e.html">
 
 <dom-module id="send-view">
   <template>
-
-    <paper-input name="toName" type="text" label="Recipient name" value="{{toName::input}}"></paper-input>
+    <paper-input name="from" type="text" label="Sender address" value="{{from::input}}"></paper-input>
     <paper-input name="to" type="text" label="Recipient address" value="{{to::input}}"></paper-input>
     <paper-input name="subject" type="text" label="Subject" value="{{subject::input}}"></paper-input>
-    <wysiwyg-e opened>
+    <wysiwyg-e style="min-height: 50vh" value="{{body}}">
       <wysiwyg-tool-bold></wysiwyg-tool-bold>
       <wysiwyg-tool-italic></wysiwyg-tool-italic>
       <wysiwyg-tool-underline></wysiwyg-tool-underline>
@@ -30,25 +31,51 @@
       <wysiwyg-tool-undo></wysiwyg-tool-undo>
       <wysiwyg-tool-redo></wysiwyg-tool-redo>
     </wysiwyg-e>
-    <paper-button on-tap="doSend" raised>Send!</paper-button>
+
+      <iron-ajax id="sendRequest" url="/api/v1/send" method="POST" body="{{computeApiRequestParams(from, to, subject, body)}}" handle-as="json" on-response="sendCompleted"></iron-ajax>
+      <paper-spinner-lite active="[[isSending]]"></paper-spinner-lite>
+      <paper-button on-tap="doSend" disabled="[[isSending]]" raised>Send!</paper-button>
 
   </template>
 
   <script>
     Polymer({
-
       is: 'send-view',
 
       properties: {
         route: Object,
+        from: String,
         to: String,
-        toName: String,
         subject: String,
-        body: String
+        body: {
+          type: String,
+          value: ""
+        },
+        isSending: {
+          type: Boolean,
+          value: false,
+          notify: true
+        }
+      },
+
+      computeApiRequestParams: function(from, to, subject, body){
+       return {
+         from: this.from,
+         to: this.to,
+         subject: this.subject,
+         body: this.body
+       };
       },
 
       doSend: function(){
+        this.isSending = true;
+        this.$.sendRequest.generateRequest();
+      },
+
+      sendCompleted: function(event){
+        console.log(event.detail.response);
         this.set("route.path", "test");
+        this.isSending = false;
       }
 
     });

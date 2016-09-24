@@ -1,7 +1,13 @@
 "use strict";
 var Message = (function () {
-    function Message() {
+    function Message(from, to, subject, body, uuid) {
+        this.from = from;
+        this.to = to;
+        this.subject = subject;
+        this.body = body;
+        this.uuid = uuid;
     }
+    ;
     return Message;
 }());
 Object.defineProperty(exports, "__esModule", { value: true });

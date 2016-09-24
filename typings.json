@@ -1,7 +1,10 @@
 {
   "name": "uber-code-challenge",
-  "dependencies": {},
+  "dependencies": {
+    "restify": "https://raw.githubusercontent.com/enriched/typed-restify/master/restify.d.ts"
+  },
   "globalDependencies": {
-    "restify": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#aee0039a2d6686ec78352125010ebb38a7a7d743"
+    "es6-promise": "registry:dt/es6-promise#0.0.0+20160614011821",
+    "restify": "registry:dt/restify#2.0.0+20160919061041"
   }
 }
