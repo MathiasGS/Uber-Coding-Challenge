@@ -1,11 +1,14 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
-<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-e.html">
 
 <dom-module id="send-view">
+  <style include="iron-flex iron-flex-alignment">
+  </style>
+
   <template>
     <paper-input name="from" type="text" label="Sender address" value="{{from::input}}"></paper-input>
     <paper-input name="to" type="text" label="Recipient address" value="{{to::input}}"></paper-input>
@@ -32,9 +35,12 @@
       <wysiwyg-tool-redo></wysiwyg-tool-redo>
     </wysiwyg-e>
 
-      <iron-ajax id="sendRequest" url="/api/v1/send" method="POST" body="{{computeApiRequestParams(from, to, subject, body)}}" handle-as="json" on-response="sendCompleted"></iron-ajax>
+    <iron-ajax id="sendRequest" url="/api/v1/send" method="POST" body="{{computeApiRequestParams(from, to, subject, body)}}" content-type="application/json" handle-as="json" on-response="sendCompleted"></iron-ajax>
+    
+    <div class="horizontal end-justified layout">
       <paper-spinner-lite active="[[isSending]]"></paper-spinner-lite>
       <paper-button on-tap="doSend" disabled="[[isSending]]" raised>Send!</paper-button>
+    </div>
 
   </template>
 

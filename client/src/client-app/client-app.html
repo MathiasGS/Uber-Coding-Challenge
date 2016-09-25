@@ -1,29 +1,63 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../../bower_components/paper-styles/shadow.html">
 
 <link rel="import" href="send-view.html">
 <link rel="import" href="status-view.html">
 
 <dom-module id="client-app">
+  <style include="iron-flex iron-flex-alignment">
+    :host {
+      display: block;
+      height: 100vh;
+    }
+    
+    body {
+      @apply(--layout-inline);
+      @apply(--layout-center-center);
+      @apply(--layout-wrap);
+      padding: 40px;
+    }
+    
+    .paper-header {
+      height: 200px;
+      font-size: 32px;
+      line-height: 60px;
+      padding: 50px 10px 0;
+      color: white;
+      transition: height 0.2s;
+      background-color: var(--paper-blue-500);
+    }
+    
+    .content {
+      background: white;
+    }
+    
+    .cover {
+      margin: -90px 60px 120px;
+      padding: 10px;
+      @apply(--shadow-elevation-2dp);
+    }
+  </style>
+
   <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
+    <paper-header-panel mode="scroll">
+      <div class="paper-header horizontal center-justified layout">Uber Coding Challenge</div>
+      <div class="content cover">
+        <app-location route="{{route}}" use-hash-as-path></app-location>
+        <app-route route="{{route}}" pattern=":uuid" data="{{data}}" active="{{statusViewActive}}">
+          <template is="dom-if" if="{{statusViewActive}}">
+            <status-view route="{{route}}" uuid="{{data.uuid}}"></status-view>
+          </template>
+        </app-route>
 
-    <app-location route="{{route}}" use-hash-as-path></app-location>
-    <app-route route="{{route}}" pattern=":uuid" data="{{data}}" active="{{statusViewActive}}">
-      <template is="dom-if" if="{{statusViewActive}}">
-        <status-view route="{{route}}" uuid="{{data.uuid}}"></status-view>
-      </template>
-    </app-route>
-
-    <template is="dom-if" if="{{!statusViewActive}}">
-      <send-view route="{{route}}"></send-view>
-    </template>
-
+        <template is="dom-if" if="{{!statusViewActive}}">
+          <send-view route="{{route}}"></send-view>
+        </template>
+      </div>
+    </paper-header-panel>
   </template>
 
   <script>

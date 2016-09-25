@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 import Server from "./Application";
 import SendGridAdapter from "./mailService/adapters/SendGridAdapter";
 import Worker from "./mailService/Worker";

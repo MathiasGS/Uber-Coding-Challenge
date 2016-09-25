@@ -7,4 +7,8 @@ export default class Message {
         public uuid?: String) {
 
         };
+
+    public isValid(): Boolean {
+        return true;
+    }
 }

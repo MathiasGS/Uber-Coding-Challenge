@@ -8,6 +8,9 @@ var Message = (function () {
         this.uuid = uuid;
     }
     ;
+    Message.prototype.isValid = function () {
+        return true;
+    };
     return Message;
 }());
 Object.defineProperty(exports, "__esModule", { value: true });

@@ -53,11 +53,9 @@
         this.status = "error fetching status... retrying in 5 seconds.";
 
         // Retry request in 5 seconds
-        if(this.status === "pending"){
-          this.async(function() {
-            this.$.statusRequest.generateRequest();
-          }, 5000);
-        }
+        this.async(function() {
+          this.$.statusRequest.generateRequest();
+        }, 5000);
       }
     });
   </script>

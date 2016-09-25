@@ -1,4 +1,5 @@
 "use strict";
+require('dotenv').config();
 var Application_1 = require("./Application");
 var SendGridAdapter_1 = require("./mailService/adapters/SendGridAdapter");
 var Worker_1 = require("./mailService/Worker");
