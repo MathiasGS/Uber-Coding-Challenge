@@ -15,7 +15,7 @@ var Server = (function () {
         this.server.use(restify.fullResponse());
         this.server.use(restify.bodyParser());
         this.registerHandlers();
-        this.server.listen(80, function () {
+        this.server.listen(process.env.PORT, function () {
             console.log("%s listening at %s", _this.server.name, _this.server.url);
         });
     }

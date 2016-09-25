@@ -28,7 +28,7 @@ export default class Server {
 
         this.registerHandlers();
 
-        this.server.listen(80, () => {
+        this.server.listen(process.env.PORT, () => {
             console.log("%s listening at %s", this.server.name, this.server.url);
         });
     }
