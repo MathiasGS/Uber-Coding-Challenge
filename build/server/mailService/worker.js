@@ -2,7 +2,6 @@
 var Worker = (function () {
     function Worker(services) {
         this.services = services;
-        console.log("Worker created");
     }
     Worker.prototype.notify = function () {
         console.log("I got notified!");
@@ -10,7 +9,8 @@ var Worker = (function () {
     Worker.prototype.getPending = function () {
         return [];
     };
-    Worker.prototype.trySend = function () {
+    Worker.prototype.trySend = function (message, service) {
+        return service.send(message);
     };
     return Worker;
 }());

@@ -4,7 +4,7 @@ import Message from "../../Message";
 import IMailServiceAdapter from "./IMailServiceAdapter";
 
 export default class SendGridAdapter implements IMailServiceAdapter {
-    public send(message: Message): any {
+    public send(message: Message): Promise<String> {
         let options = {
             auth: {
                 bearer: process.env.SENDGRID_API_KEY,
@@ -34,16 +34,12 @@ export default class SendGridAdapter implements IMailServiceAdapter {
             uri: "https://api.sendgrid.com/v3/mail/send",
         };
 
-        console.log(JSON.stringify(options));
-
-        request(options, (error: any, response: any, body: any) => {
+        return request(options, (error: any, response: any, body: any) => {
             if (!error && response.statusCode === 200) {
                 console.log(body);
             } else {
                 console.log(error);
             }
-
-            console.log(JSON.stringify(response));
         });
     }
 

@@ -3,18 +3,17 @@ import IMailServiceAdapter from "./adapters/IMailServiceAdapter";
 
 export default class Worker {
     constructor(private services: IMailServiceAdapter[]) {
-        console.log("Worker created");
     }
 
-    public notify(): void{
+    public notify(): void {
         console.log("I got notified!");
     }
 
-    private getPending(): Message[]{
+    private getPending(): Message[] {
         return [];
     }
 
-    private trySend(): any{
-
+    private trySend(message: Message, service: IMailServiceAdapter) {
+        return service.send(message);
     }
 }

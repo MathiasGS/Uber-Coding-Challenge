@@ -15,7 +15,7 @@ interface IMailServiceAdapter {
      * 
      * @memberOf IMailServiceAdapter
      */
-    send(message: Message): any;
+    send(message: Message): Promise<any>;
 
     /**
      * Returns the probable state of the service.
