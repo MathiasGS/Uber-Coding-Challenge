@@ -5,7 +5,7 @@ let restify = require("restify");
  */
 let getHandler = restify.serveStatic({
 	default: "index.html",
-	directory: "./client",
+	directory: __dirname + "/client",
 });
 
 export default getHandler;
