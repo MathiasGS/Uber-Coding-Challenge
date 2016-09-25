@@ -36,9 +36,14 @@
     }
     
     .cover {
-      margin: -90px 60px 120px;
       padding: 10px;
       @apply(--shadow-elevation-2dp);
+    }
+    
+    @media (min-width: 768px) {
+      .cover {
+        margin: -90px 60px 120px;
+      }
     }
   </style>
 

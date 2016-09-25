@@ -7,6 +7,7 @@
 
 <dom-module id="send-view">
   <style include="iron-flex iron-flex-alignment">
+
   </style>
 
   <template>
@@ -35,8 +36,9 @@
       <wysiwyg-tool-redo></wysiwyg-tool-redo>
     </wysiwyg-e>
 
-    <iron-ajax id="sendRequest" url="/api/v1/send" method="POST" body="{{computeApiRequestParams(from, to, subject, body)}}" content-type="application/json" handle-as="json" on-response="sendCompleted"></iron-ajax>
-    
+    <iron-ajax id="sendRequest" url="/api/v1/send" method="POST" body="{{computeApiRequestParams(from, to, subject, body)}}"
+      content-type="application/json" handle-as="json" on-response="sendCompleted" loading="isSending"></iron-ajax>
+
     <div class="horizontal end-justified layout">
       <paper-spinner-lite active="[[isSending]]"></paper-spinner-lite>
       <paper-button on-tap="doSend" disabled="[[isSending]]" raised>Send!</paper-button>
@@ -56,11 +58,6 @@
         body: {
           type: String,
           value: ""
-        },
-        isSending: {
-          type: Boolean,
-          value: false,
-          notify: true
         }
       },
 
@@ -74,14 +71,12 @@
       },
 
       doSend: function(){
-        this.isSending = true;
         this.$.sendRequest.generateRequest();
       },
 
       sendCompleted: function(event){
         console.log(event.detail.response);
         this.set("route.path", "test");
-        this.isSending = false;
       }
 
     });
