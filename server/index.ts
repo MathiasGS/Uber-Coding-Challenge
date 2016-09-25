@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({silent: true});
 
 import Server from "./Application";
 import SendGridAdapter from "./mailService/adapters/SendGridAdapter";
