@@ -15,7 +15,7 @@
     "build": "tsc",
     "start": "nodemon build/server/index.js",
     "lint": "tslint **/*.ts",
-    "install": "cd client && bower install"
+    "install": "cd client && bower install && cd .."
   },
   "author": "Mathias Grund Sørensen <mathias.grund@gmail.com>",
   "license": "MIT",
