@@ -6,11 +6,16 @@
   "directories": {
     "test": "test"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MathiasGS/Uber-Coding-Challenge"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "nodemon build/server/index.js",
-    "lint": "tslint **/*.ts"
+    "lint": "tslint **/*.ts",
+    "install": "cd client && bower install"
   },
   "author": "Mathias Grund Sørensen <mathias.grund@gmail.com>",
   "license": "MIT",
