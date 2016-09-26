@@ -4,9 +4,10 @@ var ClientFileHandler_1 = require("./handlers/ClientFileHandler");
 var SendHandler_1 = require("./handlers/SendHandler");
 var StatusHandler_1 = require("./handlers/StatusHandler");
 var Server = (function () {
-    function Server(worker) {
+    function Server(dataStorage, workers) {
         var _this = this;
-        this.worker = worker;
+        this.dataStorage = dataStorage;
+        this.workers = workers;
         var options = {
             name: "Uber Code Challenge Server",
         };
@@ -20,8 +21,8 @@ var Server = (function () {
         });
     }
     Server.prototype.registerHandlers = function () {
-        this.server.post("/api/v1/send", SendHandler_1.default);
-        this.server.get("/api/v1/status/:uuid", StatusHandler_1.default);
+        this.server.post("/api/v1/send", SendHandler_1.default(this.dataStorage, this.workers));
+        this.server.get("/api/v1/status/:uuid", StatusHandler_1.default(this.dataStorage));
         this.server.get("/.*", ClientFileHandler_1.default);
     };
     return Server;

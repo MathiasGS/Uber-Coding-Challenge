@@ -1,6 +1,7 @@
 let restify = require("restify");
 
 import ClientFileHandler from "./handlers/ClientFileHandler";
+import DataStorage from "./storage/DataStorage";
 import SendHandler from "./handlers/SendHandler";
 import StatusHandler from "./handlers/StatusHandler";
 import Worker from "./mailService/Worker";
@@ -12,10 +13,9 @@ import Worker from "./mailService/Worker";
  * @class Server
  */
 export default class Server {
-    // The typing for restify is not very good, hence we accept any type for now
     private server: any;
 
-    constructor(private worker: Worker) {
+    constructor(private dataStorage: DataStorage, private workers: Worker[]) {
         let options = {
             name: "Uber Code Challenge Server",
         };
@@ -35,10 +35,10 @@ export default class Server {
 
     private registerHandlers() {
          // Send message
-        this.server.post("/api/v1/send", SendHandler);
+        this.server.post("/api/v1/send", SendHandler(this.dataStorage, this.workers));
 
          // Serve message sending status
-        this.server.get("/api/v1/status/:uuid", StatusHandler);
+        this.server.get("/api/v1/status/:uuid", StatusHandler(this.dataStorage));
 
         // Serves static client files
         this.server.get("/.*", ClientFileHandler);

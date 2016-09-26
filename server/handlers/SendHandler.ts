@@ -1,33 +1,33 @@
-import MailServiceAdapter from "../mailService/adapters/SendGridAdapter";
+import MailServiceAdapter from "../mailService/adapters/MailGunAdapter";
 import Message from "../Message";
 import DataStorage from "../storage/DataStorage";
+import Worker from "../Worker";
 
 /**
- * Handles send requests.
+ * Handles send requests. 
+ * TypeScript does not support lazy evaluation of arrow functions, 
+ * hence this implements the desired functionality of lambda expression with lazy evaluation.
  */
-export default function SendHandler(req: any, res: any, next: any) {
-    let message = new Message(req.body.from, req.body.to, req.body.subject, req.body.body);
+export default function SendHandler(dataStorage: DataStorage, workers: Worker[]) {
+    return (req: any, res: any, next: any) => {
+        let message = new Message(req.body.from, req.body.to, req.body.subject, req.body.body);
 
-    if (!message.isValid()) {
-        console.log("Message is not valid.")
-        res.status(400);
-        res.send("Invalid input.");
-        next();
-    }
+        if (!message.isValid()) {
+            console.log("Message is not valid.");
+            res.status(400);
+            res.send("Invalid input.");
+        }
 
-    console.log("Attempting send");
         let adapter = new MailServiceAdapter();
         adapter.send(message);
-        console.log("Attempt completed");
 
-    DataStorage.getInstance().put(message).then(uuid => {
-        console.log("Promise resolved");
-
-        res.send({
-            uuid: "uuid",
+        dataStorage.put(message).then(uuid => {
+            res.send({
+                uuid: uuid,
+            });
+        }, error => {
+            res.status(400);
+            res.send();
         });
-    }, () => {
-        res.status(400);
-        res.send();
-    });
+    };
 }

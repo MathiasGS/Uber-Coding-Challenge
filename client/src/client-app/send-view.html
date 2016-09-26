@@ -75,8 +75,7 @@
       },
 
       sendCompleted: function(event){
-        console.log(event.detail.response);
-        this.set("route.path", "test");
+        this.set("route.path", event.detail.response.uuid);
       }
 
     });

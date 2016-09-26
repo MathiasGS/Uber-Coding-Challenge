@@ -1,11 +1,17 @@
 let restify = require("restify");
 
 /**
- * Handler for client files. Serves static files.
+ * Handles status requests. 
+ * TypeScript does not support lazy evaluation of arrow functions, 
+ * hence this implements the desired functionality of lambda expression with lazy evaluation.
  */
-export default function StatusHandler(req: any, res: any, next: any) {
-    res.send({
-        status: "pending",
-        timestamp: Date.now(),
-    });
+export default function SendHandler(dataStorage: DataStorage) {
+    return (req: any, res: any, next: any) => {
+        dataStorage.get(req.params.uuid).then(message => {
+            res.send(message);
+        }, error => {
+            res.status(400);
+            res.send();
+        });
+    };
 }

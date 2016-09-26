@@ -1,25 +1,48 @@
 import Message from "../Message";
 
-export default class DataStorage {
+/**
+ * Abstract class for data storages to extend.
+ * 
+ * @abstract
+ * @class DataStorage
+ */
+abstract class DataStorage {
 
-    private static instance: DataStorage = new DataStorage();
+    /**
+     * Persists the message to the data storage.
+     * 
+     * @abstract
+     * @protected
+     * @param {Message} message
+     * @returns {Promise<String>}
+     * 
+     * @memberOf DataStorage
+     */
+    abstract public put(message: Message): Promise<String>;
 
-    public static getInstance() {
-        return DataStorage.instance;
-    }
+    /**
+     * Retrieves the message from the data storage.
+     * 
+     * @abstract
+     * @protected
+     * @param {String} uuid
+     * @returns {Promise<Message>}
+     * 
+     * @memberOf DataStorage
+     */
+    abstract public get(uuid: String): Promise<Message>;
 
-    constructor() {
-        if (DataStorage.instance) {
-            throw Error("Singleton: use getInstance() instead of new.");
-        }
-    }
-
-    public put(message: Message): Promise<String> {
-        console.log("Database put");
-        return new Promise<String>(() => resolve("uuid"));
-    }
-
-    public get(uuid: String): Promise<Message> {
-        return new Promise<Message>(() => new Message("", "", "", ""));
-    }
+    /**
+     * Atomically and mutually exclusively locks and retrieves a batch of pending messages.
+     * 
+     * @abstract
+     * @protected
+     * @param {String} uuid
+     * @returns {Promise<Message[]>}
+     * 
+     * @memberOf DataStorage
+     */
+    abstract public retrievePending(uuid: String): Promise<Message[]>;
 }
+
+export default DataStorage;

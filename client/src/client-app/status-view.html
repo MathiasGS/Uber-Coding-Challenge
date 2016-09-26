@@ -1,16 +1,34 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
 
 <dom-module id="status-view">
+  <style include="iron-flex iron-flex-alignment">
+    iron-icon {
+      width: 50px;
+      height: 50px;
+      float: left;
+      padding: 15px;
+    }
+  </style>
+
   <template>
-    <iron-ajax id="statusRequest" url="[[apiRequest()]]" handle-as="json" on-response="updateStatus" on-error="requestError" loading="loading"></iron-ajax>
+    <iron-ajax id="statusRequest" handle-as="json" on-response="updateStatus" on-error="requestError" loading="loading"></iron-ajax>
 
-    <template is="dom-if" if="[[status]]">
-      <h1>[[status]]</h1>
-      <small>[[timestamp]]</small>
-    </template>
+    <iron-icon icon="icons:arrow-back" on-tap="home"></iron-icon>
 
-    <paper-button raised on-tap="home" class="indigo">Send another mail!</paper-button>
+    <div class="horizontal center-justified layout">
+        <h1>
+          <template is="dom-if" if="[[!statusIcon]]">
+            <paper-spinner-lite active></paper-spinner-lite>
+          </template>
+          <template is="dom-if" if="[[statusIcon]]">
+            <iron-icon icon="[[statusIcon]]"></iron-icon>
+          </template>
+          [[statusLabel]]</h1>
+    </div>
   </template>
 
   <script>
@@ -21,11 +39,25 @@
       properties: {
         route: Object,
         uuid: String,
-        status: String,
-        timestamp: Date
+        status: {
+          type: Number,
+          value: -1,
+          notify: true
+        },
+        statusLabel: {
+          type: String,
+          computed: 'computeStatusLabel(status)',
+          notify: true
+        },
+        statusIcon: {
+          type: String,
+          computed: 'computeStatusIcon(status)',
+          notify: true
+        }        
       },
       
       ready: function(){
+        this.$.statusRequest.url = this.apiRequest();
         this.$.statusRequest.generateRequest();
       },
 
@@ -38,14 +70,41 @@
       },
 
       updateStatus: function(event){
-        this.status = event.detail.response.status;
+
+        this.status = event.detail.response.sendStatus;
         this.timestamp = new Date(event.detail.response.timestamp);
 
         // Repeat request every 5 seconds to poll status update
-        if(this.status === "pending"){
+        if(!this.isCompleted === 0){
           this.async(function() {
             this.$.statusRequest.generateRequest();
           }, 5000);
+        }
+      },
+
+      computeStatusLabel: function(status) {
+        switch(status){
+          case -1:  // Loading
+            return "Loding...";
+          case 0: // Pending
+            return "Pending delivery...";
+          case 1: // Sent
+            return "Sent!";
+          case 2: // Rejected
+            return "Rejected!";
+          default:
+            return "Uh oh... Unknown state!?";
+        }
+      },
+
+      computeStatusIcon: function(status) {
+        switch(status){
+          case 1: // Sent
+            return "icons:check-circle";
+          case 2: // Rejected
+            return "icons:cancel";
+          default:
+            return null;
         }
       },
 
