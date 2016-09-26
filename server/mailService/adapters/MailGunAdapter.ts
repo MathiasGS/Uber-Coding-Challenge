@@ -7,8 +7,8 @@ export default class MailGunAdapter implements IMailServiceAdapter {
     public send(message: Message): Promise<String> {
         let options = {
             from: message.from,
+            html: message.body,
             subject: message.subject,
-            text: message.body,
             to: message.to,
         };
 

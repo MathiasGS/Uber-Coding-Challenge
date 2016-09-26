@@ -4,14 +4,14 @@
   "description": "Uber Code Challenge project.",
   "main": "build/index.js",
   "directories": {
-    "test": "test"
+    "test": "build/test"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/MathiasGS/Uber-Coding-Challenge"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/mocha/bin/mocha --reporter spec build/test",
     "build": "tsc",
     "start": "nodemon build/server/index.js",
     "lint": "tslint **/*.ts",
@@ -25,6 +25,7 @@
     "dotenv": "^2.0.0",
     "es6-promise": "^3.3.1",
     "mailgun-js": "^0.7.12",
+    "mocha": "^3.0.2",
     "promise": "^7.1.1",
     "request": "^2.75.0",
     "restify": "^4.1.1",

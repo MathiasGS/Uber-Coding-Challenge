@@ -6,8 +6,8 @@ var MailGunAdapter = (function () {
     MailGunAdapter.prototype.send = function (message) {
         var options = {
             from: message.from,
+            html: message.body,
             subject: message.subject,
-            text: message.body,
             to: message.to,
         };
         return mailgun.messages().send(options, function (error, body) {
