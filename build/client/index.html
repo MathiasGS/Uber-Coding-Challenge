@@ -29491,7 +29491,7 @@ Command                                 | Mac Shortcut                          
     <paper-input name="subject" type="text" label="Subject" value="{{subject::input}}"></paper-input>
     <wysiwyg-element value="{{body}}"></wysiwyg-element>
 
-    <iron-ajax id="sendRequest" url="/api/v1/send" method="POST" body="{{computeApiRequestParams(from, to, subject, body)}}" content-type="application/json" handle-as="json" on-response="sendCompleted" loading="isSending"></iron-ajax>
+    <iron-ajax id="sendRequest" url="/api/v1/send" method="POST" body="{{computeApiRequestParams()}}" content-type="application/json" handle-as="json" on-response="sendCompleted" on-error="sendError" loading="{{isSending}}"></iron-ajax>
 
     <div class="horizontal end-justified layout">
       <paper-spinner-lite active="[[isSending]]"></paper-spinner-lite>
@@ -29516,12 +29516,12 @@ Command                                 | Mac Shortcut                          
         }
       },
 
-      computeApiRequestParams: function(from, to, subject, body){
+      computeApiRequestParams: function(){
        return {
-         from: from,
-         to: to,
-         subject: subject,
-         body: body
+         from: this.from,
+         to: this.to,
+         subject: this.subject,
+         body: this.body
        };
       },
 
@@ -29531,6 +29531,10 @@ Command                                 | Mac Shortcut                          
 
       sendCompleted: function(event){
         this.set("route.path", event.detail.response.uuid);
+      },
+
+      sendError: function(event){
+        alert("Uh oh. The server is not available. Are you online?");
       }
 
     });
