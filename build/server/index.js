@@ -12,4 +12,3 @@ var worker = new Worker_1.default(dataStorage, [
     new SendGridAdapter_1.default(),
 ]);
 var app = new Application_1.default(dataStorage, [worker]);
-//# sourceMappingURL=index.js.map

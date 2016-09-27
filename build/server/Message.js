@@ -18,4 +18,3 @@ var Message = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Message;
-//# sourceMappingURL=Message.js.map

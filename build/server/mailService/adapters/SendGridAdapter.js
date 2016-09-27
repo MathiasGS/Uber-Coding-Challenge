@@ -48,4 +48,3 @@ var SendGridAdapter = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = SendGridAdapter;
-//# sourceMappingURL=SendGridAdapter.js.map

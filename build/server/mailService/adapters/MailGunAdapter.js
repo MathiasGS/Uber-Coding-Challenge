@@ -26,4 +26,3 @@ var MailGunAdapter = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = MailGunAdapter;
-//# sourceMappingURL=MailGunAdapter.js.map

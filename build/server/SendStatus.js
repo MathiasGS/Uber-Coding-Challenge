@@ -8,4 +8,3 @@ var SendStatus;
 ;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = SendStatus;
-//# sourceMappingURL=SendStatus.js.map

@@ -84,4 +84,3 @@ var AzureDataStorage = (function (_super) {
 }(DataStorage_1.default));
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = AzureDataStorage;
-//# sourceMappingURL=AzureDataStorage.js.map

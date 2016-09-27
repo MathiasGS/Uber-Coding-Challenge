@@ -6,4 +6,3 @@ var DataStorage = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = DataStorage;
-//# sourceMappingURL=DataStorage.js.map

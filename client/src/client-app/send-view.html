@@ -3,7 +3,7 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-e.html">
+<link rel="import" href="wysiwyg-element.html">
 
 <dom-module id="send-view">
   <style include="iron-flex iron-flex-alignment">
@@ -14,27 +14,7 @@
     <paper-input name="from" type="text" label="Sender address" value="{{from::input}}"></paper-input>
     <paper-input name="to" type="text" label="Recipient address" value="{{to::input}}"></paper-input>
     <paper-input name="subject" type="text" label="Subject" value="{{subject::input}}"></paper-input>
-    <wysiwyg-e style="min-height: 50vh" value="{{body}}">
-      <wysiwyg-tool-bold></wysiwyg-tool-bold>
-      <wysiwyg-tool-italic></wysiwyg-tool-italic>
-      <wysiwyg-tool-underline></wysiwyg-tool-underline>
-      <wysiwyg-tool-strike></wysiwyg-tool-strike>
-      <wysiwyg-tool-clear></wysiwyg-tool-clear>
-      <wysiwyg-tool-code></wysiwyg-tool-code>
-      <wysiwyg-tool-link></wysiwyg-tool-link>
-      <wysiwyg-tool-image></wysiwyg-tool-image>
-      <wysiwyg-tool-audio></wysiwyg-tool-audio>
-      <wysiwyg-tool-video></wysiwyg-tool-video>
-      <wysiwyg-tool-ordered></wysiwyg-tool-ordered>
-      <wysiwyg-tool-unordered></wysiwyg-tool-unordered>
-      <wysiwyg-tool-indent></wysiwyg-tool-indent>
-      <wysiwyg-tool-outdent></wysiwyg-tool-outdent>
-      <wysiwyg-tool-justify right center full></wysiwyg-tool-justify>
-      <wysiwyg-tool-heading h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
-      <wysiwyg-tool-blockquote></wysiwyg-tool-blockquote>
-      <wysiwyg-tool-undo></wysiwyg-tool-undo>
-      <wysiwyg-tool-redo></wysiwyg-tool-redo>
-    </wysiwyg-e>
+    <wysiwyg-element value="{{body}}"></wysiwyg-element>
 
     <iron-ajax id="sendRequest" url="/api/v1/send" method="POST" body="{{computeApiRequestParams(from, to, subject, body)}}"
       content-type="application/json" handle-as="json" on-response="sendCompleted" loading="isSending"></iron-ajax>
@@ -63,10 +43,10 @@
 
       computeApiRequestParams: function(from, to, subject, body){
        return {
-         from: this.from,
-         to: this.to,
-         subject: this.subject,
-         body: this.body
+         from: from,
+         to: to,
+         subject: subject,
+         body: body
        };
       },
 
@@ -75,6 +55,7 @@
       },
 
       sendCompleted: function(event){
+        debugger;
         this.set("route.path", event.detail.response.uuid);
       }
 

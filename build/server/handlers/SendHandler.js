@@ -23,4 +23,3 @@ function SendHandler(dataStorage, workers) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = SendHandler;
-//# sourceMappingURL=SendHandler.js.map

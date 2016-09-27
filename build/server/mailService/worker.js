@@ -58,4 +58,3 @@ var Worker = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Worker;
-//# sourceMappingURL=Worker.js.map

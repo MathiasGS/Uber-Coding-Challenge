@@ -38,4 +38,3 @@ var MockDataStorage = (function (_super) {
 }(DataStorage_1.default));
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = MockDataStorage;
-//# sourceMappingURL=DataStorage.js.map

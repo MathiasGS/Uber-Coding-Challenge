@@ -17,4 +17,3 @@ var MockMailServiceAdapter = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = MockMailServiceAdapter;
-//# sourceMappingURL=SendAdapter.js.map

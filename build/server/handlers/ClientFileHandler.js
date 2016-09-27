@@ -6,4 +6,3 @@ var getHandler = restify.serveStatic({
 });
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = getHandler;
-//# sourceMappingURL=ClientFileHandler.js.map
