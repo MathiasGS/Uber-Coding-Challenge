@@ -7,7 +7,7 @@ var SendGridAdapter_1 = require("./mailservices/SendGridAdapter");
 var AzureDataStorage_1 = require("./storage/AzureDataStorage");
 var Worker_1 = require("./Worker");
 var dataStorage = new AzureDataStorage_1.default();
-var numCPUs = 1;
+var numCPUs = require('os').cpus().length;
 if (cluster.isMaster) {
     var workers_1 = [];
     for (var i = 0; i < numCPUs; i++) {
