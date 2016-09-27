@@ -2,7 +2,7 @@
 var restify = require("restify");
 var getHandler = restify.serveStatic({
     default: "index.html",
-    directory: "./build/client",
+    directory: process.env.CLIENT_FILES,
 });
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = getHandler;
