@@ -15,7 +15,7 @@ if (cluster.isMaster) {
     }
     cluster.on("exit", function () {
         console.log("Worker died. Spawning new worker.");
-        cluster.fork();
+        workers_1.push(cluster.fork());
     });
     var notifyWorkers = function () {
         for (var _i = 0, workers_2 = workers_1; _i < workers_2.length; _i++) {

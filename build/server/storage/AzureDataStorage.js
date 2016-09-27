@@ -53,7 +53,9 @@ var AzureDataStorage = (function (_super) {
         var query = new azure.TableQuery()
             .top(30)
             .where("status == 0")
-            .and("worker == '' or Timestamp < datetime'" + new Date(Date.now() - 600000).toISOString() + "'");
+            .and("worker == ''")
+            .or("status == 0")
+            .and("Timestamp < datetime'" + new Date(Date.now() - 600000).toISOString() + "'");
         return new Promise(function (resolve, reject) {
             _this.tableSvc.queryEntities(AzureDataStorage.tableName, query, null, function (error, result) {
                 if (!error && result.entries.length > 0) {
@@ -76,11 +78,10 @@ var AzureDataStorage = (function (_super) {
         return new Promise(function (resolve, reject) {
             _this.tableSvc.replaceEntity(AzureDataStorage.tableName, entity, function (error, result) {
                 if (error) {
-                    console.log("Entity has changed, skipping.");
                     reject();
                     return;
                 }
-                entity['.metadata'] = result['.metadata'];
+                entity[".metadata"] = result[".metadata"];
                 resolve(_this.toMessage(entity));
             });
         });

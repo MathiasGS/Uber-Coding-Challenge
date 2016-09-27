@@ -36,7 +36,7 @@ export default class SendGridAdapter implements IMailServiceAdapter {
 
         return new Promise((resolve, reject) => {
             request(options, (error: any, response: any) => {
-                if (!error && response.statusCode === 200) {
+                if (!error && response.statusCode === 202) {
                     resolve();
                 } else {
                     reject(error);

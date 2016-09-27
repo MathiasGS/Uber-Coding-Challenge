@@ -14,7 +14,7 @@ let dataStorage = new AzureDataStorage();
 // Setup the worker pool
 // We run one worker for each core
 // We serve the application from the master (see github for argumentation)
-const numCPUs = 1; // require('os').cpus().length;
+const numCPUs = 1; //require('os').cpus().length;
 
 if (cluster.isMaster) {
     // Fork workers
@@ -25,7 +25,7 @@ if (cluster.isMaster) {
 
     cluster.on("exit", () => {
         console.log("Worker died. Spawning new worker.");
-        cluster.fork();
+        workers.push(cluster.fork());
     });
 
     let notifyWorkers = () => {

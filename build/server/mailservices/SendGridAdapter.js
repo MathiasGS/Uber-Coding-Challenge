@@ -34,7 +34,7 @@ var SendGridAdapter = (function () {
         };
         return new Promise(function (resolve, reject) {
             request(options, function (error, response) {
-                if (!error && response.statusCode === 200) {
+                if (!error && response.statusCode === 202) {
                     resolve();
                 }
                 else {

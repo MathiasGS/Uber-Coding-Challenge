@@ -1,5 +1,5 @@
 import Message from "../../server/Message";
-import IMailServiceAdapter from "../../server/mailService/IMailServiceAdapter";
+import IMailServiceAdapter from "../../server/mailservices/IMailServiceAdapter";
 
 export default class MockMailServiceAdapter implements IMailServiceAdapter {
     constructor(private sendHandler = (message, resolve, reject) => resolve(message.uuid)) {

@@ -51,7 +51,9 @@ export default class AzureDataStorage extends DataStorage {
         let query = new azure.TableQuery()
             .top(30)
             .where("status == 0")
-            .and("worker == '' or Timestamp < datetime'" + new Date(Date.now() - 600000).toISOString() + "'");
+            .and("worker == ''")
+            .or("status == 0")
+            .and("Timestamp < datetime'" + new Date(Date.now() - 600000).toISOString() + "'");
 
         return new Promise((resolve: Function, reject: Function) => {
             this.tableSvc.queryEntities(AzureDataStorage.tableName, query, null, (error, result) => {
@@ -84,12 +86,11 @@ export default class AzureDataStorage extends DataStorage {
         return new Promise((resolve: Function, reject: Function) => {
             this.tableSvc.replaceEntity(AzureDataStorage.tableName, entity, (error, result) => {
                 if (error) {
-                    console.log("Entity has changed, skipping.");
                     reject();
                     return;
                 }
 
-                entity['.metadata'] = result['.metadata'];
+                entity[".metadata"] = result[".metadata"];
                 resolve(this.toMessage(entity));
             });
         });
