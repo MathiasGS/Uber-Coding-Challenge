@@ -1,11 +1,10 @@
-let request = require("request");
-
-import Message from "../../Message";
-import IMailServiceAdapter from "./IMailServiceAdapter";
-
-export default class SendGridAdapter implements IMailServiceAdapter {
-    public send(message: Message): Promise<String> {
-        let options = {
+"use strict";
+var request = require("request");
+var SendGridAdapter = (function () {
+    function SendGridAdapter() {
+    }
+    SendGridAdapter.prototype.send = function (message) {
+        var options = {
             auth: {
                 bearer: process.env.SENDGRID_API_KEY,
             },
@@ -33,17 +32,21 @@ export default class SendGridAdapter implements IMailServiceAdapter {
             method: "POST",
             uri: "https://api.sendgrid.com/v3/mail/send",
         };
-
-        return request(options, (error: any, response: any, body: any) => {
-            if (!error && response.statusCode === 200) {
-                console.log(body);
-            } else {
-                console.log(error);
-            }
+        return new Promise(function (resolve, reject) {
+            request(options, function (error, response) {
+                if (!error && response.statusCode === 200) {
+                    resolve();
+                }
+                else {
+                    reject(error);
+                }
+            });
         });
-    }
-
-    public isAvailable(): boolean {
+    };
+    SendGridAdapter.prototype.isAvailable = function () {
         return true;
-    }
-}
+    };
+    return SendGridAdapter;
+}());
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = SendGridAdapter;

@@ -1,14 +1,33 @@
 "use strict";
 require('dotenv').config({ silent: true });
 var cluster = require('cluster');
-var AzureDataStorage_1 = require("./storage/AzureDataStorage");
-var MailGunAdapter_1 = require("./mailService/adapters/MailGunAdapter");
 var Application_1 = require("./Application");
-var SendGridAdapter_1 = require("./mailService/adapters/SendGridAdapter");
-var Worker_1 = require("./mailService/Worker");
+var MailGunAdapter_1 = require("./mailservices/MailGunAdapter");
+var SendGridAdapter_1 = require("./mailservices/SendGridAdapter");
+var AzureDataStorage_1 = require("./storage/AzureDataStorage");
+var Worker_1 = require("./Worker");
 var dataStorage = new AzureDataStorage_1.default();
-var worker = new Worker_1.default(dataStorage, [
-    new MailGunAdapter_1.default(),
-    new SendGridAdapter_1.default(),
-]);
-var app = new Application_1.default(dataStorage, [worker]);
+var numCPUs = 1;
+if (cluster.isMaster) {
+    var workers_1 = [];
+    for (var i = 0; i < numCPUs; i++) {
+        workers_1.push(cluster.fork());
+    }
+    cluster.on("exit", function () {
+        console.log("Worker died. Spawning new worker.");
+        cluster.fork();
+    });
+    var notifyWorkers = function () {
+        for (var _i = 0, workers_2 = workers_1; _i < workers_2.length; _i++) {
+            var worker = workers_2[_i];
+            worker.send("");
+        }
+    };
+    var app = new Application_1.default(dataStorage, notifyWorkers);
+}
+else {
+    var worker = new Worker_1.default(dataStorage, [
+        new SendGridAdapter_1.default(),
+        new MailGunAdapter_1.default(),
+    ]);
+}

@@ -1,5 +1,5 @@
 let azure = require("azure-storage");
-let Promise = require('promise');
+let Promise = require("promise");
 let uuid = require("uuid");
 
 import DataStorage from "./DataStorage";
@@ -12,6 +12,7 @@ export default class AzureDataStorage extends DataStorage {
     private entGen = azure.TableUtilities.entityGenerator;
 
     constructor() {
+        super();
         this.tableSvc.createTableIfNotExists(AzureDataStorage.tableName, (error) => {
             if (error) {
                 throw new Error(error);
@@ -20,7 +21,7 @@ export default class AzureDataStorage extends DataStorage {
     }
 
     public put(message: Message): Promise<String> {
-        return new Promise<String>((resolve, reject) => {
+        return new Promise((resolve: Function, reject: Function) => {
             let entity = this.toEntity(message);
 
             this.tableSvc.insertOrReplaceEntity(AzureDataStorage.tableName, entity, (error, result) => {
@@ -34,7 +35,7 @@ export default class AzureDataStorage extends DataStorage {
     }
 
     public get(uuid: String): Promise<Message> {
-        return new Promise<Message>((resolve, reject) => {
+        return new Promise((resolve: Function, reject: Function) => {
             this.tableSvc.retrieveEntity(AzureDataStorage.tableName, uuid, uuid, (error, result) => {
                 if (!error) {
                     resolve(this.toMessage(result));
@@ -45,16 +46,22 @@ export default class AzureDataStorage extends DataStorage {
         });
     }
 
-    protected retrievePending(uuid: String): Promise<Message[]> {
-        var query = new azure.TableQuery()
+    public retrievePending(uuid: String): Promise<Promise<Message>[]> {
+        // If worker claimed message > 10 minutes ago, assume it is dead
+        let query = new azure.TableQuery()
             .top(30)
-            .where('Status eq ?', '0')
-            .and('Worker eq ?', '');
+            .where("status == 0")
+            .and("worker == '' or Timestamp < datetime'" + new Date(Date.now() - 600000).toISOString() + "'");
 
-        return new Promise<Message>((resolve, reject) => {
-            this.tableSvc.queryEntities(AzureDataStorage.tableName, query, null, (error, result, response) => {
-                if (!error) {
-                    resolve(result.entries);
+        return new Promise((resolve: Function, reject: Function) => {
+            this.tableSvc.queryEntities(AzureDataStorage.tableName, query, null, (error, result) => {
+                if (!error && result.entries.length > 0) {
+                    let out: Promise<Message>[] = [];
+                    for (let entry of result.entries) {
+                        entry.worker._ = uuid;
+                        out.push(this.optimisticLock(entry));
+                    }
+                    resolve(out);
                 } else {
                     reject(error);
                 }
@@ -62,21 +69,47 @@ export default class AzureDataStorage extends DataStorage {
         });
     }
 
-    private toEntity(message: Message): Object {
+    /**
+     * Locks entity using optimistic concurrency.
+     * Entity ETag is automatically used to assert that the entity has not changed.
+     * If entity has changed, the request will fail.
+     * 
+     * @private
+     * @param {*} entity
+     * @param {String} uuid
+     * 
+     * @memberOf AzureDataStorage
+     */
+    private optimisticLock(entity: any): Promise<Message> {
+        return new Promise((resolve: Function, reject: Function) => {
+            this.tableSvc.replaceEntity(AzureDataStorage.tableName, entity, (error, result) => {
+                if (error) {
+                    console.log("Entity has changed, skipping.");
+                    reject();
+                    return;
+                }
 
+                entity['.metadata'] = result['.metadata'];
+                resolve(this.toMessage(entity));
+            });
+        });
+    }
+
+    private toEntity(message: Message): any {
         if (!message.uuid) {
             message.uuid = uuid.v1();
         }
 
         return {
-            PartitionKey: this.entGen.String(message.sendStatus),
+            PartitionKey: this.entGen.String(message.uuid),
             RowKey: this.entGen.String(message.uuid),
             message: this.entGen.String(JSON.stringify(message)),
+            status: this.entGen.Int32(message.sendStatus),
             worker: this.entGen.String(""),
         };
     }
 
-    private toMessage(entity: Object): Message {
+    private toMessage(entity: any): Message {
         let message = JSON.parse(entity.message._);
 
         return new Message(

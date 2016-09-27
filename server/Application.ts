@@ -4,7 +4,7 @@ import ClientFileHandler from "./handlers/ClientFileHandler";
 import DataStorage from "./storage/DataStorage";
 import SendHandler from "./handlers/SendHandler";
 import StatusHandler from "./handlers/StatusHandler";
-import Worker from "./mailService/Worker";
+import Worker from ".//Worker";
 
 /**
  * Back-end server class
@@ -15,7 +15,7 @@ import Worker from "./mailService/Worker";
 export default class Server {
     private server: any;
 
-    constructor(private dataStorage: DataStorage, private workers: Worker[]) {
+    constructor(private dataStorage: DataStorage, private notifyWorkers: () => void) {
         let options = {
             name: "Uber Code Challenge Server",
         };
@@ -35,7 +35,7 @@ export default class Server {
 
     private registerHandlers() {
          // Send message
-        this.server.post("/api/v1/send", SendHandler(this.dataStorage, this.workers));
+        this.server.post("/api/v1/send", SendHandler(this.dataStorage, this.notifyWorkers));
 
          // Serve message sending status
         this.server.get("/api/v1/status/:uuid", StatusHandler(this.dataStorage));

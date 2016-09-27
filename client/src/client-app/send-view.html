@@ -37,7 +37,8 @@
         subject: String,
         body: {
           type: String,
-          value: ""
+          value: "",
+          notify: true
         }
       },
 
@@ -55,7 +56,6 @@
       },
 
       sendCompleted: function(event){
-        debugger;
         this.set("route.path", event.detail.response.uuid);
       }
 

@@ -5,13 +5,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var azure = require("azure-storage");
-var Promise = require('promise');
+var Promise = require("promise");
 var uuid = require("uuid");
 var DataStorage_1 = require("./DataStorage");
 var Message_1 = require("../Message");
 var AzureDataStorage = (function (_super) {
     __extends(AzureDataStorage, _super);
     function AzureDataStorage() {
+        _super.call(this);
         this.tableSvc = azure.createTableService();
         this.entGen = azure.TableUtilities.entityGenerator;
         this.tableSvc.createTableIfNotExists(AzureDataStorage.tableName, function (error) {
@@ -51,16 +52,36 @@ var AzureDataStorage = (function (_super) {
         var _this = this;
         var query = new azure.TableQuery()
             .top(30)
-            .where('Status eq ?', '0')
-            .and('Worker eq ?', '');
+            .where("status == 0")
+            .and("worker == '' or Timestamp < datetime'" + new Date(Date.now() - 600000).toISOString() + "'");
         return new Promise(function (resolve, reject) {
-            _this.tableSvc.queryEntities(AzureDataStorage.tableName, query, null, function (error, result, response) {
-                if (!error) {
-                    resolve(result.entries);
+            _this.tableSvc.queryEntities(AzureDataStorage.tableName, query, null, function (error, result) {
+                if (!error && result.entries.length > 0) {
+                    var out = [];
+                    for (var _i = 0, _a = result.entries; _i < _a.length; _i++) {
+                        var entry = _a[_i];
+                        entry.worker._ = uuid;
+                        out.push(_this.optimisticLock(entry));
+                    }
+                    resolve(out);
                 }
                 else {
                     reject(error);
                 }
+            });
+        });
+    };
+    AzureDataStorage.prototype.optimisticLock = function (entity) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.tableSvc.replaceEntity(AzureDataStorage.tableName, entity, function (error, result) {
+                if (error) {
+                    console.log("Entity has changed, skipping.");
+                    reject();
+                    return;
+                }
+                entity['.metadata'] = result['.metadata'];
+                resolve(_this.toMessage(entity));
             });
         });
     };
@@ -69,9 +90,10 @@ var AzureDataStorage = (function (_super) {
             message.uuid = uuid.v1();
         }
         return {
-            PartitionKey: this.entGen.String(message.sendStatus),
+            PartitionKey: this.entGen.String(message.uuid),
             RowKey: this.entGen.String(message.uuid),
             message: this.entGen.String(JSON.stringify(message)),
+            status: this.entGen.Int32(message.sendStatus),
             worker: this.entGen.String(""),
         };
     };

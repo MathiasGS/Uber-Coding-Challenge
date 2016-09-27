@@ -29466,7 +29466,9 @@ Command                                 | Mac Shortcut                          
       properties: {
         value: {
             type: String,
-            value: ""
+            value: "",
+            notify: true,
+            reflectToAttribute: true
         }
       },
     });
@@ -29502,7 +29504,8 @@ Command                                 | Mac Shortcut                          
         subject: String,
         body: {
           type: String,
-          value: ""
+          value: "",
+          notify: true
         }
       },
 
@@ -29520,7 +29523,6 @@ Command                                 | Mac Shortcut                          
       },
 
       sendCompleted: function(event){
-        debugger;
         this.set("route.path", event.detail.response.uuid);
       }
 
@@ -29618,10 +29620,6 @@ Command                                 | Mac Shortcut                          
           <iron-icon icon="[[statusIcon]]"></iron-icon>
         </template>
         [[statusLabel]]</h1>
-         <template is="dom-if" if="[[timestamp]]">
-          <br>
-          <small>on [[timestamp]]</small>
-         </template>
     </div>
   </template>
 
@@ -29632,7 +29630,11 @@ Command                                 | Mac Shortcut                          
 
       properties: {
         route: Object,
-        uuid: String,
+        uuid: {
+          type: String,
+          notify: true,
+          observer: '_uuidChanged'
+        },
         status: {
           type: Number,
           value: -1,
@@ -29651,17 +29653,19 @@ Command                                 | Mac Shortcut                          
         timestamp: Object 
       },
       
-      ready: function(){
-        // URL needs to be set on ready as parameters from parent are only applied after ready.
-        this.$.statusRequest.url = this.apiRequest();
-        this.$.statusRequest.generateRequest();
+      _uuidChanged: function(uuid){
+        if(uuid){
+          this.$.statusRequest.url = this.apiRequest(uuid);
+          this.$.statusRequest.generateRequest();
+        }   
       },
 
-      apiRequest: function(){
-        return "/api/v1/status/".concat(this.uuid);
+      apiRequest: function(uuid){
+        return "/api/v1/status/".concat(uuid);
       },
 
       home: function(){
+        this.status = -1;
         this.set("route.path", "");
       },
 
@@ -29670,7 +29674,7 @@ Command                                 | Mac Shortcut                          
         this.timestamp = new Date(event.detail.response.timestamp);
 
         // Repeat request every 5 seconds to poll status update
-        if(!this.isCompleted === 0){
+        if(this.status === 0){
           this.async(function() {
             this.$.statusRequest.generateRequest();
           }, 5000);

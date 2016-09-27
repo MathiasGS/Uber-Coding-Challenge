@@ -18,7 +18,7 @@ abstract class DataStorage {
      * 
      * @memberOf DataStorage
      */
-    abstract public put(message: Message): Promise<String>;
+    public abstract put(message: Message): Promise<String>;
 
     /**
      * Retrieves the message from the data storage.
@@ -30,7 +30,7 @@ abstract class DataStorage {
      * 
      * @memberOf DataStorage
      */
-    abstract public get(uuid: String): Promise<Message>;
+    public abstract get(uuid: String): Promise<Message>;
 
     /**
      * Atomically and mutually exclusively locks and retrieves a batch of pending messages.
@@ -42,7 +42,7 @@ abstract class DataStorage {
      * 
      * @memberOf DataStorage
      */
-    abstract public retrievePending(uuid: String): Promise<Message[]>;
+    public abstract retrievePending(uuid: String): Promise<Promise<Message>[]>;
 }
 
 export default DataStorage;
