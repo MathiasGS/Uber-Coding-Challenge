@@ -1,4 +1,4 @@
-let mailgun = require('mailgun-js')({ apiKey: process.env.MAILGUN_API_KEY, domain: "ubercodingchallenge.azurewebsites.net" });
+let request = require("request");
 
 import Message from "../Message";
 import IMailServiceAdapter from "./IMailServiceAdapter";
@@ -6,24 +6,30 @@ import IMailServiceAdapter from "./IMailServiceAdapter";
 export default class MailGunAdapter implements IMailServiceAdapter {
     public send(message: Message): Promise<any> {
         let options = {
-            from: message.from,
-            html: message.body,
-            subject: message.subject,
-            to: message.to,
+            auth: {
+                password: process.env.MAILGUN_API_KEY,
+                user: "api",
+            },
+            form: {
+                from: message.from,
+                html: message.body,
+                subject: message.subject,
+                to: message.to,
+            },
+            method: "POST",
+            uri: "https://api.mailgun.net/v3/" + process.env.MAILGUN_API_USER + "/messages",
         };
 
         return new Promise((resolve, reject) => {
-            mailgun.messages().send(options, (error) => {
-                if (!error) {
+            request(options, (error: any, response: any, body: any) => {
+                let parsedBody = JSON.parse(body);
+
+                if (!error && parsedBody.id) {
                     resolve();
                 } else {
-                    reject(error);
+                    reject(error || parsedBody.message);
                 }
             });
         });
-    }
-
-    public isAvailable(): boolean {
-        return true;
     }
 }

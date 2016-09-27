@@ -44,8 +44,4 @@ export default class SendGridAdapter implements IMailServiceAdapter {
             });
         });
     }
-
-    public isAvailable(): boolean {
-        return true;
-    }
 }

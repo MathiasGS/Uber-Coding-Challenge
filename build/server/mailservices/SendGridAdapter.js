@@ -43,9 +43,6 @@ var SendGridAdapter = (function () {
             });
         });
     };
-    SendGridAdapter.prototype.isAvailable = function () {
-        return true;
-    };
     return SendGridAdapter;
 }());
 Object.defineProperty(exports, "__esModule", { value: true });

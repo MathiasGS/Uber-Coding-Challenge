@@ -16,15 +16,6 @@ interface IMailServiceAdapter {
      * @memberOf IMailServiceAdapter
      */
     send(message: Message): Promise<any>;
-
-    /**
-     * Returns the probable state of the service.
-     * 
-     * @returns {boolean} True if service is expected to be available; otherwise false.
-     * 
-     * @memberOf IMailServiceAdapter
-     */
-    isAvailable(): boolean;
 }
 
 export default IMailServiceAdapter;
