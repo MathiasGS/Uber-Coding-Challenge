@@ -79,3 +79,11 @@ I picked Azure Table Storage based on the assumption that it is required to alwa
 One may argue that e.g. a Queue-based storage might be relevant for this scenario. Due to time constraints and the assumed requirement to persist messages and send statuses this was not explored further. However, the data storage is isolated so that it is possible to replace the implementation at a later point in time.
 
 Experience: I have used Azure Table Storage in a couple of hobby projects.
+
+# Build and Installation
+Client compilation, as well as dependency installation for server, is managed with installation using "npm install".
+
+TypeScript/server compilation can be executed using "npm run build".
+
+The /build folder containes a precompiled version of the project. The project may be run locally using "sudo npm start".
+The build folder and inclusion of client compilation in install script is due to automatic deployment to Azure.
