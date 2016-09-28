@@ -58,7 +58,7 @@ var Worker = (function () {
             else {
                 _this.log("Unable to retrieve any pending messages. Sleeping for a while or until interrupted.");
                 _this.active = false;
-                _this.timer = setTimeout(function () { return _this.run(); }, process.env.WORKER_SLEEP_DURATION * 1000);
+                _this.timer = setTimeout(function () { return _this.run(); }, parseInt(process.env.WORKER_SLEEP_DURATION) * 1000);
             }
         });
     };

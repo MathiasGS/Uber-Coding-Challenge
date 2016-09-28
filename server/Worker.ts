@@ -96,7 +96,7 @@ export default class Worker {
             } else {
                 this.log("Unable to retrieve any pending messages. Sleeping for a while or until interrupted.");
                 this.active = false;
-                this.timer = setTimeout(() => this.run(), process.env.WORKER_SLEEP_DURATION * 1000);
+                this.timer = setTimeout(() => this.run(), parseInt(process.env.WORKER_SLEEP_DURATION) * 1000);
             }
         });
     }
