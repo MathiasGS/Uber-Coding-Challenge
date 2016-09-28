@@ -4,7 +4,6 @@ function SendHandler(dataStorage, notifyWorkers) {
     return function (req, res, next) {
         var message = new Message_1.default(req.body.from, req.body.to, req.body.subject, req.body.body);
         if (!message.isValid()) {
-            console.log("Message is not valid.");
             res.status(400);
             res.send("Invalid input.");
         }

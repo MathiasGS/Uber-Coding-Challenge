@@ -1,13 +1,12 @@
 let restify = require("restify");
 
 import ClientFileHandler from "./handlers/ClientFileHandler";
-import DataStorage from "./storage/DataStorage";
 import SendHandler from "./handlers/SendHandler";
 import StatusHandler from "./handlers/StatusHandler";
-import Worker from ".//Worker";
+import DataStorage from "./storage/DataStorage";
 
 /**
- * Back-end server class
+ * Backend server class
  * 
  * @export Server class
  * @class Server
@@ -15,6 +14,14 @@ import Worker from ".//Worker";
 export default class Server {
     private server: any;
 
+    /**
+     * Creates an instance of Server.
+     * 
+     * @param {DataStorage} dataStorage
+     * @param {() => void} notifyWorkers Function to notify workers of pending work.
+     * 
+     * @memberOf Server
+     */
     constructor(private dataStorage: DataStorage, private notifyWorkers: () => void) {
         let options = {
             name: "Uber Code Challenge Server",
@@ -33,6 +40,13 @@ export default class Server {
         });
     }
 
+    /**
+     * Registers backend API endpoint handlers and client file request handlers.
+     * 
+     * @private
+     * 
+     * @memberOf Server
+     */
     private registerHandlers() {
          // Send message
         this.server.post("/api/v1/send", SendHandler(this.dataStorage, this.notifyWorkers));

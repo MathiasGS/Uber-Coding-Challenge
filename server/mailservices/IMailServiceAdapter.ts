@@ -8,10 +8,10 @@ import Message from "../Message";
  */
 interface IMailServiceAdapter {
     /**
-     * Hands of mail to mail service.
+     * Hands off mail to mail service.
      * 
-     * @param {Message} message The message to send.
-     * @returns {*} Promise of sending.
+     * @param {Message} message
+     * @returns {Promise<any>}
      * 
      * @memberOf IMailServiceAdapter
      */

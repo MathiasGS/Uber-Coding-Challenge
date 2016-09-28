@@ -9,12 +9,12 @@ var Worker = (function () {
         this.active = false;
         this.pending = false;
         this.uuid = uuid.v1();
-        console.log("Starting worker with uuid " + this.uuid);
+        this.log("Starting.");
         if (this.services.length === 0) {
+            this.log("At least one mail service must be provided. Exiting.");
             throw new Error("At least one mail service must be provided.");
         }
         process.on("message", function () {
-            console.log(_this.uuid + ": Got notified!");
             if (!_this.active) {
                 if (_this.timer) {
                     clearTimeout(_this.timer);
@@ -31,8 +31,8 @@ var Worker = (function () {
         var _this = this;
         this.active = true;
         this.pending = false;
-        console.log(this.uuid + ": Doing a run.");
-        this.dataStorage.retrievePending(this.uuid).then(function (pending) {
+        this.log("Doing a run.");
+        this.dataStorage.retrievePending(this.uuid, process.env.WORKER_BATCH_SIZE).then(function (pending) {
             var inProgress = [];
             var _loop_1 = function(promise) {
                 inProgress.push(new Promise(function (resolve) {
@@ -48,19 +48,17 @@ var Worker = (function () {
                 var promise = pending_1[_i];
                 _loop_1(promise);
             }
-            console.log("inProgress: " + inProgress.length);
             Promise.all(inProgress).then(function () {
-                console.log("inProgress done");
                 _this.run();
             });
         }, function () {
-            console.log(_this.uuid + ": No more pending messages. Sleeping for 5 minutes or until interrupted.");
             if (_this.pending) {
                 _this.run();
             }
             else {
+                _this.log("Unable to retrieve any pending messages. Sleeping for a while or until interrupted.");
                 _this.active = false;
-                _this.timer = setTimeout(function () { return _this.run(); }, 300000);
+                _this.timer = setTimeout(function () { return _this.run(); }, process.env.WORKER_SLEEP_DURATION * 1000);
             }
         });
     };
@@ -79,6 +77,9 @@ var Worker = (function () {
             message.sendStatus = SendStatus_1.default.Rejected;
             this.dataStorage.put(message);
         }
+    };
+    Worker.prototype.log = function (message) {
+        console.log(this.uuid + ": " + message);
     };
     return Worker;
 }());

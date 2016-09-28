@@ -7,8 +7,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 var azure = require("azure-storage");
 var Promise = require("promise");
 var uuid = require("uuid");
-var DataStorage_1 = require("./DataStorage");
 var Message_1 = require("../Message");
+var DataStorage_1 = require("./DataStorage");
 var AzureDataStorage = (function (_super) {
     __extends(AzureDataStorage, _super);
     function AzureDataStorage() {
@@ -48,10 +48,10 @@ var AzureDataStorage = (function (_super) {
             });
         });
     };
-    AzureDataStorage.prototype.retrievePending = function (uuid) {
+    AzureDataStorage.prototype.retrievePending = function (uuid, batchSize) {
         var _this = this;
         var query = new azure.TableQuery()
-            .top(30)
+            .top(batchSize)
             .where("status == 0")
             .and("worker == ''")
             .or("status == 0")

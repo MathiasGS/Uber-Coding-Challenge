@@ -2,6 +2,7 @@ import Message from "../Message";
 
 /**
  * Abstract class for data storages to extend.
+ * Abstract class used rather than interface to encourage sharing of common functionality.
  * 
  * @abstract
  * @class DataStorage
@@ -14,7 +15,7 @@ abstract class DataStorage {
      * @abstract
      * @protected
      * @param {Message} message
-     * @returns {Promise<String>}
+     * @returns {Promise<String>} Promise of uuid.
      * 
      * @memberOf DataStorage
      */
@@ -33,16 +34,16 @@ abstract class DataStorage {
     public abstract get(uuid: String): Promise<Message>;
 
     /**
-     * Atomically and mutually exclusively locks and retrieves a batch of pending messages.
+     * Atomically and mutually exclusively locks and retrieves a batch of pending messages for the uuid.
      * 
      * @abstract
-     * @protected
      * @param {String} uuid
-     * @returns {Promise<Message[]>}
+     * @param {Number} batchSize
+     * @returns {Promise<Promise<Message>[]>}
      * 
      * @memberOf DataStorage
      */
-    public abstract retrievePending(uuid: String): Promise<Promise<Message>[]>;
+    public abstract retrievePending(uuid: String, batchSize: Number): Promise<Promise<Message>[]>;
 }
 
 export default DataStorage;

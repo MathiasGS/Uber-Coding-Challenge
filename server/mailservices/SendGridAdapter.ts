@@ -3,7 +3,22 @@ let request = require("request");
 import Message from "../Message";
 import IMailServiceAdapter from "./IMailServiceAdapter";
 
+/**
+ * SendGrid mail sending adapter.
+ * 
+ * @export
+ * @class SendGridAdapter
+ * @implements {IMailServiceAdapter}
+ */
 export default class SendGridAdapter implements IMailServiceAdapter {
+    /**
+     * Hands off mails to SendGrid.
+     * 
+     * @param {Message} message
+     * @returns {Promise<any>}
+     * 
+     * @memberOf SendGridAdapter
+     */
     public send(message: Message): Promise<any> {
         let options = {
             auth: {

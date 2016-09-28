@@ -6,7 +6,7 @@ import DataStorage from "../storage/DataStorage";
 /**
  * Handles status requests. 
  * TypeScript does not support lazy evaluation of arrow functions, 
- * hence this implements the desired functionality of lambda expression with lazy evaluation.
+ * hence this implements similar (limited) functionality of lambda expression with lazy evaluation.
  */
 export default function SendHandler(dataStorage: DataStorage) {
     return (req: any, res: any, next: any) => {
