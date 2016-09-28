@@ -1,4 +1,5 @@
 # Uber Coding Challenge: Email Service
+Overall, I believe this architecture provides a scaleable base designed with high availability, which was a goal of the solution, although it comes with the drawback of added complexity.
 
 Build a reliable email sending service which is capable of quickly switching between email service providers if one goes down.
 
@@ -17,6 +18,13 @@ Due to time constraints, there are many interesting topics for further work, a f
 - Adding telemetry. Particularly useful for scaling workers.
 - Error handling and improved robustness.
 - Performance callibration of workers (batch sizes, sleep durations, number of workers contra number of pending messages).
+
+### Security
+I have focused on using external components with a large user base to justify basic reliability and security. Dependencies are scanned for known vulnerabilities using snyk.io.
+
+[![Known Vulnerabilities](https://snyk.io/test/github/mathiasgs/uber-coding-challenge/958f822988cad82e57f73ddcbc93baa049c085d0/badge.svg)](https://snyk.io/test/github/mathiasgs/uber-coding-challenge/958f822988cad82e57f73ddcbc93baa049c085d0)
+
+An obvious neglection in the solution is the use of HTTPS. I have not prioritized this due to time constrains, but would have set up the Azure deployment to automatically renew and use certificates from Let's Encrypt (which I have done for one of my hobby projects: homeio.net). As this is a matter of configuration, I considered it a non-priority.
 
 # Architecture and Design
 The solution is designed with a strong client-server achitecture as required in the challenge. Primarily, is consists of the following parts implemented using the outlined technologies:
@@ -69,3 +77,5 @@ Overall, I believe this architecture provides a scaleable designed with high ava
 I picked Azure Table Storage based on the assumption that it is required to always be able to tell if a message is sent (messages and send status are persisted) and because it provided the necessary capabilities with regards to locking for concurrent workers (email sending is not idempotent!).
 
 One may argue that e.g. a Queue-based storage might be relevant for this scenario. Due to time constraints and the assumed requirement to persist messages and send statuses this was not explored further. However, the data storage is isolated so that it is possible to replace the implementation at a later point in time.
+
+Experience: I have used Azure Table Storage in a couple of hobby projects.
