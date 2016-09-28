@@ -81,9 +81,9 @@ One may argue that e.g. a Queue-based storage might be relevant for this scenari
 Experience: I have used Azure Table Storage in a couple of hobby projects.
 
 # Build and Installation
-Client compilation, as well as dependency installation for server, is managed with installation using "npm install".
+- Dependencies are installed with the installation script using "npm install".
+- Client vulcanization is executed using "npm run vulcanize".
+- TypeScript/server compilation can be executed using "npm run build".
+- The project may be run locally using "sudo npm start".
 
-TypeScript/server compilation can be executed using "npm run build".
-
-The /build folder containes a precompiled version of the project. The project may be run locally using "sudo npm start".
-The build folder and inclusion of client compilation in install script is due to automatic deployment to Azure.
+The /build folder containes a precompiled version of the project. This folder is included to facilitate automatic deployment to Azure.
