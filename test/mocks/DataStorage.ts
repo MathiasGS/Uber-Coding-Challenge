@@ -1,34 +1,42 @@
 let Promise = require("promise");
 
-import DataStorage from "../../server/storage/DataStorage";
 import Message from "../../server/Message";
+import DataStorage from "../../server/storage/DataStorage";
 
 export default class MockDataStorage extends DataStorage {
-    public putInput = [];
-    public getInput = [];
+    public putInput: Message[] = [];
+    public getInput: String[] = [];
+    public retrievePendingInput: String[] = [];
 
-    constructor(private putHandler = (message, resolve, reject) => resolve(message.uuid),
-                private getHandler = (resolve, reject) => resolve(new Message("", "", "", ""))) {
+    public pendingMessages: Message[] = [];
 
+    public putHandler = (message: Message, resolve: (uuid: String) => void, reject: (error: any) => void) => resolve(message.uuid);
+    public getHandler = (uuid: String, resolve: (message: Message) => void, reject: (error: any) => void) => resolve(new Message("", "", "", ""));
+    public retrievePendingHandler = (uuid: String, resolve: (promises: Promise<Message>[]) => void, reject: (error: any) => void) => {
+        resolve(this.pendingMessages.map(message => new Promise((resolve: any) => resolve(message))));
     }
 
     public put(message: Message): Promise<String> {
         this.putInput.push(message);
 
-        return new Promise<String>((resolve, reject) => {
+        return new Promise((resolve: (uuid: String) => void, reject: (error: any) => void) => {
             this.putHandler(message, resolve, reject);
         });
     }
 
     public get(uuid: String): Promise<Message> {
-        this.getInput.push(message);
+        this.getInput.push(uuid);
 
-        return new Promise<Message>((resolve, reject) => {
+        return new Promise((resolve: (message: Message) => void, reject: (error: any) => void) => {
             this.getHandler(uuid, resolve, reject);
         });
     }
 
-    public retrievePending(uuid: String): Promise<Message[]> {
-        return new Promise<Message[]>((resolve, reject) => resolve([]));
+    public retrievePending(uuid: String, batchSize: Number): Promise<Promise<Message>[]> {
+        this.retrievePendingInput.push(uuid);
+
+        return new Promise((resolve: (promises: Promise<Message>[]) => void, reject: (error: any) => void) => {
+            this.retrievePendingHandler(uuid, resolve, reject);
+        });
     }
 }

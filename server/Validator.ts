@@ -20,7 +20,7 @@ export default class Validator {
      * @memberOf Validator
      */
     public static isEmail(input: String): Boolean {
-        return /[^\s@]+@[^\s@]+\.[^\s;@]+/.test(<string> input);
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(<string> input);
     }
 
     /**

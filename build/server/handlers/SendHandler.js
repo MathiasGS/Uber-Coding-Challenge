@@ -6,6 +6,7 @@ function SendHandler(dataStorage, notifyWorkers) {
         if (!message.isValid()) {
             res.status(400);
             res.send("Invalid input.");
+            return;
         }
         dataStorage.put(message).then(function (uuid) {
             notifyWorkers();

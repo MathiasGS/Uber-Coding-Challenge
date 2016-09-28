@@ -61,7 +61,7 @@ export default class Worker {
      * 
      * @memberOf Worker
      */
-    private run() {
+    protected run() {
         this.active = true;
         this.pending = false;
 
@@ -73,7 +73,7 @@ export default class Worker {
             // The promise interface only allow to wait for all fulfills or one rejects
             // We need to wait for all fulfilling or rejecting
             let inProgress: Promise<any>[] = [];
-
+            this.log("Got " + pending.length + " promises");
             for (let promise of pending) {
                 inProgress.push(new Promise((resolve) => {
                     promise.then((message: Message) => {
@@ -90,6 +90,7 @@ export default class Worker {
                 this.run();
             });
         }, () => {
+            this.log("Got no promises");
             if (this.pending) {
                 // No pending retrieved, but notified of pending work                
                 this.run();
@@ -110,7 +111,7 @@ export default class Worker {
      * 
      * @memberOf Worker
      */
-    private trySend(message: Message, serviceIndex: number = 0) {
+    protected trySend(message: Message, serviceIndex: number = 0) {
         if (this.services.length > serviceIndex) {
             this.services[serviceIndex].send(message).then(() => {
                 // Success
@@ -135,7 +136,7 @@ export default class Worker {
      * 
      * @memberOf Worker
      */
-    private log(message: String) {
+    protected log(message: String) {
         console.log(this.uuid + ": " + message);
     }
 }

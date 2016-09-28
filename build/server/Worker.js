@@ -34,6 +34,7 @@ var Worker = (function () {
         this.log("Doing a run.");
         this.dataStorage.retrievePending(this.uuid, process.env.WORKER_BATCH_SIZE).then(function (pending) {
             var inProgress = [];
+            _this.log("Got " + pending.length + " promises");
             var _loop_1 = function(promise) {
                 inProgress.push(new Promise(function (resolve) {
                     promise.then(function (message) {
@@ -52,6 +53,7 @@ var Worker = (function () {
                 _this.run();
             });
         }, function () {
+            _this.log("Got no promises");
             if (_this.pending) {
                 _this.run();
             }
