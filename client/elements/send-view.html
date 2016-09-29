@@ -3,25 +3,31 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="validator-element.html">
 <link rel="import" href="wysiwyg-element.html">
 
 <dom-module id="send-view">
   <style include="iron-flex iron-flex-alignment">
-
+    paper-button {
+      color: white;
+      background-color: var(--paper-blue-500);
+    }
   </style>
 
   <template>
-    <paper-input name="from" type="text" label="Sender address" value="{{from::input}}"></paper-input>
-    <paper-input name="to" type="text" label="Recipient address" value="{{to::input}}"></paper-input>
+    <validator-element type="email" validator-name="emailValidator"></validator-element>
+    <paper-input name="from" type="text" label="Sender address" value="{{from::input}}" validator="emailValidator"
+      auto-validate></paper-input>
+    <paper-input name="to" type="text" label="Recipient address" value="{{to::input}}" validator="emailValidator" auto-validate></paper-input>
     <paper-input name="subject" type="text" label="Subject" value="{{subject::input}}"></paper-input>
     <wysiwyg-element value="{{body}}"></wysiwyg-element>
 
     <iron-ajax id="sendRequest" url="/api/v1/send" method="POST" body="{{computeApiRequestParams(from, to, subject, body)}}"
-      content-type="application/json" handle-as="json" on-response="sendCompleted" on-error="sendError"  loading="{{isSending}}"></iron-ajax>
+      content-type="application/json" handle-as="json" on-response="sendCompleted" on-error="sendError" loading="{{isSending}}"></iron-ajax>
 
     <div class="horizontal end-justified layout">
       <paper-spinner-lite active="[[isSending]]"></paper-spinner-lite>
-      <paper-button on-tap="doSend" disabled="[[isSending]]" raised>Send!</paper-button>
+      <paper-button on-tap="doSend" disabled="[[!computeSendIsEnabled()]]" raised>Send!</paper-button>
     </div>
 
   </template>
@@ -51,6 +57,19 @@
        };
       },
 
+      computeSendIsEnabled: function(){
+        if (this.isSending) return false;
+
+        var inputs = this.querySelectorAll("paper-input");
+        var valid = true;
+        for (var i = 0; i < inputs.length; i++) {
+          valid = valid && inputs[i].validate();
+          if (!valid) break;
+        }
+
+        return valid;
+      },
+
       doSend: function(){
         this.$.sendRequest.generateRequest();
       },
@@ -60,8 +79,18 @@
       },
 
       sendError: function(event){
-        alert("Uh oh. The server is not available. Are you online?");
-      }
+        switch(event.detail.request.xhr.status){
+          case 400:
+            alert("The provided input is not valid.");
+            break;
+          case 0:
+          case 404:
+            alert("The server is not available. Are you online?");
+            break;
+          default:
+            alert("An unknown error occured. Sorry!");
+        }
+      },
 
     });
   </script>

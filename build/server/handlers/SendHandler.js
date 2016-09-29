@@ -2,6 +2,7 @@
 var Message_1 = require("../Message");
 function SendHandler(dataStorage, notifyWorkers) {
     return function (req, res, next) {
+        req.body = req.body || {};
         var message = new Message_1.default(req.body.from, req.body.to, req.body.subject, req.body.body);
         if (!message.isValid()) {
             res.status(400);

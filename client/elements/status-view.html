@@ -4,6 +4,8 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner-lite.html">
 
+<script src="../../build/server/SendStatus.js"></script>
+
 <dom-module id="status-view">
   <style include="iron-flex iron-flex-alignment">
     iron-icon {
@@ -85,7 +87,7 @@
         this.timestamp = new Date(event.detail.response.timestamp);
 
         // Repeat request every 5 seconds to poll status update
-        if(this.status === 0){
+        if(this.status === SendStatus.Pending){
           this.async(function() {
             this.$.statusRequest.generateRequest();
           }, 5000);
@@ -96,11 +98,11 @@
         switch(status){
           case -1:  // Loading
             return "Loding...";
-          case 0: // Pending
+          case SendStatus.Pending: // Pending
             return "Pending delivery...";
-          case 1: // Sent
+          case SendStatus.Sent: // Sent
             return "Sent!";
-          case 2: // Rejected
+          case SendStatus.Rejected: // Rejected
             return "Rejected!";
           default:
             return "Uh oh... Unknown state!?";
@@ -109,9 +111,9 @@
 
       computeStatusIcon: function(status) {
         switch(status){
-          case 1: // Sent
+          case SendStatus.Sent: // Sent
             return "icons:check-circle";
-          case 2: // Rejected
+          case SendStatus.Rejected: // Rejected
             return "icons:cancel";
           default:
             return null;

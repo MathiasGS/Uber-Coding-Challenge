@@ -15,8 +15,8 @@
     "build": "tsc",
     "start": "nodemon build/server/index.js",
     "lint": "tslint **/*.ts",
-    "install": "cd client && bower install && cd .. && cp -R client/bower_components/ build/client/bower_components/",
-    "vulcanize": "vulcanize --exclude \"client/bower_components/promise-polyfill/\" client/index.html > build/client/index.html && cp -R client/bower_components/ build/client/bower_components/"
+    "install": "cd client && bower install && cd .. && cp -R client/bower_components/ build/client/bower_components/ && cp client/manifest.json build/client/",
+    "vulcanize": "vulcanize --inline-scripts --exclude \"client/bower_components/promise-polyfill/\" client/index.html > build/client/index.html && cp -R client/bower_components/ build/client/bower_components/"
   },
   "author": "Mathias Grund Sørensen <mathias.grund@gmail.com>",
   "license": "MIT",

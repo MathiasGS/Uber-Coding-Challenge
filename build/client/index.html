@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="manifest" href="/manifest.json">
-  <script src="bower_components/webcomponentsjs/webcomponents-lite.js">/**
+  <script>/**
  * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
@@ -2509,6 +2509,10 @@ window.CustomElements.addModule(function(scope) {
   head.insertBefore(style, head.firstChild);
 })(window.WebComponents);</script>
   <script src="bower_components/promise-polyfill/promise.min.js"></script>
+  <script>
+    // We do not need a module loading framework on the client side
+    exports = {};
+  </script>
   <style is="custom-style" include="iron-positioning">
     html,
     body {
@@ -18357,6 +18361,101 @@ The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
 The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+--><script>
+
+  /**
+   * Use `Polymer.IronValidatorBehavior` to implement a custom input/form validator. Element
+   * instances implementing this behavior will be registered for use in elements that implement
+   * `Polymer.IronValidatableBehavior`.
+   * 
+   * @demo demo/index.html
+   * @polymerBehavior
+   */
+  Polymer.IronValidatorBehavior = {
+
+    properties: {
+
+      /**
+       * Namespace for this validator.
+       */
+      validatorType: {
+        type: String,
+        value: 'validator'
+      },
+
+      /**
+       * Name for this validator, used by `Polymer.IronValidatableBehavior` to lookup this element.
+       */
+      validatorName: {
+        type: String,
+        value: function() {
+          return this.is;
+        }
+      }
+
+    },
+
+    ready: function() {
+      new Polymer.IronMeta({type: this.validatorType, key: this.validatorName, value: this});
+    },
+
+    /**
+     * Implement custom validation logic in this function.
+     * @param {Object} values The value to validate. May be any type depending on the validation logic.
+     * @return {Boolean} true if `values` is valid.
+     */
+    validate: function(values) {
+    }
+  };
+
+</script>
+<script>"use strict";
+var Validator = (function () {
+    function Validator() {
+    }
+    Validator.isEmail = function (input) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input);
+    };
+    Validator.hasValue = function (input) {
+        return input !== undefined && input !== null;
+    };
+    return Validator;
+}());
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = Validator;
+</script>
+
+<dom-module id="validator-element" assetpath="elements/">
+  <script>
+    Polymer({
+      is: 'validator-element',
+
+      properties: {
+        type: String
+      },
+
+      behaviors: [
+        Polymer.IronValidatorBehavior
+      ],
+
+      validate: function(value) {
+        switch(this.type){
+          case "email":
+            return Validator.isEmail(value);
+          default:
+            return false;
+        }
+      }
+    });
+  </script>
+</dom-module><!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 --><!--
 
 The `iron-icon` element displays an icon. By default an icon renders as a 24px square.
@@ -24178,7 +24277,7 @@ The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
 The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
---><script src="bower_components/web-animations-js/web-animations-next-lite.min.js">// Copyright 2014 Google Inc. All rights reserved.
+--><script>// Copyright 2014 Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25956,7 +26055,7 @@ The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
 The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
---><script data-manual="" src="bower_components/prism/prism.js">
+--><script data-manual="">
 /* **********************************************
      Begin prism-core.js
 ********************************************** */
@@ -26469,7 +26568,7 @@ if (typeof global !== 'undefined') {
 ********************************************** */
 
 Prism.languages.markup = {
-	'comment': /<!--[\w\W]*?-->/,
+	'comment': /\x3c!--[\w\W]*?--\x3e/,
 	'prolog': /<\?[\w\W]+?\?>/,
 	'doctype': /<!DOCTYPE[\w\W]+?>/,
 	'cdata': /<!\[CDATA\[[\w\W]*?]]>/i,
@@ -26739,7 +26838,7 @@ Prism.languages.js = Prism.languages.javascript;
 })();
 </script>
 <link rel="stylesheet" href="bower_components/prism/themes/prism.css">
-<script src="bower_components/undo/undo.js">/*
+<script>/*
  * Undo.js - A undo/redo framework for JavaScript
  * 
  * http://jzaefferer.github.com/undo
@@ -27023,7 +27122,7 @@ if (typeof define === "function" && define.amd) {
 		}
 	};
 </script>
-<script src="bower_components/keyboardevent-key-polyfill/index.js">/* global define, KeyboardEvent, module */
+<script>/* global define, KeyboardEvent, module */
 
 (function () {
 
@@ -27145,7 +27244,7 @@ if (typeof define === "function" && define.amd) {
 
 })();
 </script>
-<script src="bower_components/selectionchange-polyfill/selectionchange.js">// github.com/2is10/selectionchange-polyfill
+<script>// github.com/2is10/selectionchange-polyfill
 
 var selectionchange = (function (undefined) {
 
@@ -29482,20 +29581,24 @@ Command                                 | Mac Shortcut                          
   </script>
 </dom-module><dom-module id="send-view" assetpath="elements/">
   <style include="iron-flex iron-flex-alignment">
-
+    paper-button {
+      color: white;
+      background-color: var(--paper-blue-500);
+    }
   </style>
 
   <template>
-    <paper-input name="from" type="text" label="Sender address" value="{{from::input}}"></paper-input>
-    <paper-input name="to" type="text" label="Recipient address" value="{{to::input}}"></paper-input>
+    <validator-element type="email" validator-name="emailValidator"></validator-element>
+    <paper-input name="from" type="text" label="Sender address" value="{{from::input}}" validator="emailValidator" auto-validate=""></paper-input>
+    <paper-input name="to" type="text" label="Recipient address" value="{{to::input}}" validator="emailValidator" auto-validate=""></paper-input>
     <paper-input name="subject" type="text" label="Subject" value="{{subject::input}}"></paper-input>
     <wysiwyg-element value="{{body}}"></wysiwyg-element>
 
-    <iron-ajax id="sendRequest" url="/api/v1/send" method="POST" body="{{computeApiRequestParams()}}" content-type="application/json" handle-as="json" on-response="sendCompleted" on-error="sendError" loading="{{isSending}}"></iron-ajax>
+    <iron-ajax id="sendRequest" url="/api/v1/send" method="POST" body="{{computeApiRequestParams(from, to, subject, body)}}" content-type="application/json" handle-as="json" on-response="sendCompleted" on-error="sendError" loading="{{isSending}}"></iron-ajax>
 
     <div class="horizontal end-justified layout">
       <paper-spinner-lite active="[[isSending]]"></paper-spinner-lite>
-      <paper-button on-tap="doSend" disabled="[[isSending]]" raised="">Send!</paper-button>
+      <paper-button on-tap="doSend" disabled="[[!computeSendIsEnabled()]]" raised="">Send!</paper-button>
     </div>
 
   </template>
@@ -29516,13 +29619,26 @@ Command                                 | Mac Shortcut                          
         }
       },
 
-      computeApiRequestParams: function(){
+      computeApiRequestParams: function(from, to, subject, body){
        return {
-         from: this.from,
-         to: this.to,
-         subject: this.subject,
-         body: this.body
+         from: from,
+         to: to,
+         subject: subject,
+         body: body
        };
+      },
+
+      computeSendIsEnabled: function(){
+        if (this.isSending) return false;
+
+        var inputs = this.querySelectorAll("paper-input");
+        var valid = true;
+        for (var i = 0; i < inputs.length; i++) {
+          valid = valid && inputs[i].validate();
+          if (!valid) break;
+        }
+
+        return valid;
       },
 
       doSend: function(){
@@ -29534,8 +29650,18 @@ Command                                 | Mac Shortcut                          
       },
 
       sendError: function(event){
-        alert("Uh oh. The server is not available. Are you online?");
-      }
+        switch(event.detail.request.xhr.status){
+          case 400:
+            alert("The provided input is not valid.");
+            break;
+          case 0:
+          case 404:
+            alert("The server is not available. Are you online?");
+            break;
+          default:
+            alert("An unknown error occured. Sorry!");
+        }
+      },
 
     });
   </script>
@@ -29604,6 +29730,18 @@ Command                                 | Mac Shortcut                          
 <g id="zoom-out-map"><path d="M15 3l2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3zm6 12l-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6zm12-6l-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6z"></path></g>
 </defs></svg>
 </iron-iconset-svg>
+<script>"use strict";
+var SendStatus;
+(function (SendStatus) {
+    SendStatus[SendStatus["Pending"] = 0] = "Pending";
+    SendStatus[SendStatus["Sent"] = 1] = "Sent";
+    SendStatus[SendStatus["Rejected"] = 2] = "Rejected";
+})(SendStatus || (SendStatus = {}));
+;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = SendStatus;
+</script>
+
 <dom-module id="status-view" assetpath="elements/">
   <style include="iron-flex iron-flex-alignment">
     iron-icon {
@@ -29685,7 +29823,7 @@ Command                                 | Mac Shortcut                          
         this.timestamp = new Date(event.detail.response.timestamp);
 
         // Repeat request every 5 seconds to poll status update
-        if(this.status === 0){
+        if(this.status === SendStatus.Pending){
           this.async(function() {
             this.$.statusRequest.generateRequest();
           }, 5000);
@@ -29696,11 +29834,11 @@ Command                                 | Mac Shortcut                          
         switch(status){
           case -1:  // Loading
             return "Loding...";
-          case 0: // Pending
+          case SendStatus.Pending: // Pending
             return "Pending delivery...";
-          case 1: // Sent
+          case SendStatus.Sent: // Sent
             return "Sent!";
-          case 2: // Rejected
+          case SendStatus.Rejected: // Rejected
             return "Rejected!";
           default:
             return "Uh oh... Unknown state!?";
@@ -29709,9 +29847,9 @@ Command                                 | Mac Shortcut                          
 
       computeStatusIcon: function(status) {
         switch(status){
-          case 1: // Sent
+          case SendStatus.Sent: // Sent
             return "icons:check-circle";
-          case 2: // Rejected
+          case SendStatus.Rejected: // Rejected
             return "icons:cancel";
           default:
             return null;

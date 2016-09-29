@@ -9,6 +9,10 @@
   <link rel="manifest" href="/manifest.json">
   <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
   <script src="bower_components/promise-polyfill/promise.min.js"></script>
+  <script>
+    // We do not need a module loading framework on the client side
+    exports = {};
+  </script>
   <link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
   <link rel="import" href="elements/client-app.html">
   <style is="custom-style" include="iron-positioning">

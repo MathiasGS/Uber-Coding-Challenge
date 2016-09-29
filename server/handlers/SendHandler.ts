@@ -8,6 +8,8 @@ import DataStorage from "../storage/DataStorage";
  */
 export default function SendHandler(dataStorage: DataStorage, notifyWorkers: () => void) {
     return (req: any, res: any, next: any) => {
+        req.body = req.body || {};  // If no parameters are supplied, body will be undefined
+
         let message = new Message(req.body.from, req.body.to, req.body.subject, req.body.body);
 
         if (!message.isValid()) {
