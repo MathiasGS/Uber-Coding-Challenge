@@ -3,13 +3,28 @@ let Promise = require("promise");
 import Message from "../../server/Message";
 import IDataStorage from "../../server/storage/IDataStorage";
 
+/**
+ * Data storage mock. Handlers can be customized as needed during tests.
+ * 
+ * @export
+ * @class MockDataStorage
+ * @implements {IDataStorage}
+ */
 export default class MockDataStorage implements IDataStorage {
+    // Logs put requests
     public putInput: Message[] = [];
+
+    // Logs get requests
     public getInput: String[] = [];
+
+    // Logs retrieve input requests
     public retrievePendingInput: String[] = [];
 
+    // Will be returned by the default retrievePendingHandler
     public pendingMessages: Message[] = [];
 
+    // Default handlers
+    // Too complex to customize during instantiation
     public putHandler = (message: Message, resolve: (uuid: String) => void, reject: (error: any) => void) => resolve(message.uuid);
     public getHandler = (uuid: String, resolve: (message: Message) => void, reject: (error: any) => void) => resolve(new Message("", "", "", ""));
     public retrievePendingHandler = (uuid: String, resolve: (promises: Promise<Message>[]) => void, reject: (error: any) => void) => {

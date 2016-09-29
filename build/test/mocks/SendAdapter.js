@@ -10,9 +10,6 @@ var MockMailServiceAdapter = (function () {
             _this.sendHandler(message, resolve, reject);
         });
     };
-    MockMailServiceAdapter.prototype.isAvailable = function () {
-        return true;
-    };
     return MockMailServiceAdapter;
 }());
 Object.defineProperty(exports, "__esModule", { value: true });

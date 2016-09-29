@@ -32,9 +32,8 @@ var Worker = (function () {
         this.active = true;
         this.pending = false;
         this.log("Doing a run.");
-        this.dataStorage.retrievePending(this.uuid, process.env.WORKER_BATCH_SIZE).then(function (pending) {
+        return this.dataStorage.retrievePending(this.uuid, process.env.WORKER_BATCH_SIZE).then(function (pending) {
             var inProgress = [];
-            _this.log("Got " + pending.length + " promises");
             var _loop_1 = function(promise) {
                 inProgress.push(new Promise(function (resolve) {
                     promise.then(function (message) {
@@ -49,11 +48,10 @@ var Worker = (function () {
                 var promise = pending_1[_i];
                 _loop_1(promise);
             }
-            Promise.all(inProgress).then(function () {
+            return Promise.all(inProgress).then(function () {
                 _this.run();
             });
         }, function () {
-            _this.log("Got no promises");
             if (_this.pending) {
                 _this.run();
             }

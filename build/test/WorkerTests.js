@@ -7,6 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var assert = require("chai").assert;
 var cluster = require("cluster");
 var Message_1 = require("../server/Message");
+var SendStatus_1 = require("../server/SendStatus");
 var Worker_1 = require("../server/Worker");
 var DataStorage_1 = require("./mocks/DataStorage");
 var SendAdapter_1 = require("./mocks/SendAdapter");
@@ -23,7 +24,7 @@ var TestableWorker = (function (_super) {
         this.runCount++;
         if (this.doRun) {
             this.doRun = false;
-            _super.prototype.run.call(this);
+            return _super.prototype.run.call(this);
         }
     };
     TestableWorker.prototype.trySend = function (message, serviceIndex) {
@@ -32,12 +33,9 @@ var TestableWorker = (function (_super) {
             this.trySent = [];
         }
         this.trySent.push(message);
+        _super.prototype.trySend.call(this, message, serviceIndex);
     };
     TestableWorker.prototype.log = function (message) {
-        if (!this.logs) {
-            this.logs = [];
-        }
-        this.logs.push(message);
     };
     return TestableWorker;
 }(Worker_1.default));
@@ -49,12 +47,6 @@ describe("Worker Tests", function () {
         ]);
         assert(worker.runCount === 1, "Worker should run on startup.");
     });
-    it("Worker runs on notification.", function () {
-        var dataStorage = new DataStorage_1.default();
-        var worker = new TestableWorker(dataStorage, [
-            new SendAdapter_1.default(),
-        ]);
-    });
     it("Worker trySends all messages from data storage.", function () {
         var dataStorage = new DataStorage_1.default();
         dataStorage.pendingMessages = [
@@ -65,9 +57,53 @@ describe("Worker Tests", function () {
             new SendAdapter_1.default(),
         ]);
         worker.doRun = true;
-        worker.run();
-        assert(worker.trySent && worker.trySent.length === 2, "Worker should run on startup." + worker.logs.join(","));
+        worker.run().then(function () {
+            assert(worker.trySent && worker.trySent.length === 2, "All messages should reach trySend.");
+            assert(dataStorage.putInput.length === 2, "All messages should be put to datastorage.");
+            assert(dataStorage.putInput[0].sendStatus === SendStatus_1.default.Sent, "Message should get send status 'Sent'.");
+            assert(dataStorage.putInput[1].sendStatus === SendStatus_1.default.Sent, "Message should get send status 'Sent'.");
+        }, function () {
+            assert(false, "No pending messages found.");
+        });
     });
-    it("Worker runs on notification.", function () {
+    it("trySend tries all and then rejects.", function () {
+        var dataStorage = new DataStorage_1.default();
+        dataStorage.pendingMessages = [
+            new Message_1.default("user@domain.com", "user@domain.com", "1", "body"),
+        ];
+        var worker = new TestableWorker(dataStorage, [
+            new SendAdapter_1.default(function (message, resolve, reject) { return reject(); }),
+            new SendAdapter_1.default(function (message, resolve, reject) { return reject(); }),
+        ]);
+        worker.doRun = true;
+        return worker.run().then(function () {
+            assert(dataStorage.putInput.length === 1, "The message should be put to datastorage.");
+            assert(dataStorage.putInput[0].sendStatus === SendStatus_1.default.Rejected, "Message should get send status 'Rejected'.");
+        }, function () {
+            assert(false, "No pending messages found.");
+        });
+    });
+    it("trySend marks message as sent when first adapter accepts it.", function () {
+        var dataStorage = new DataStorage_1.default();
+        dataStorage.pendingMessages = [
+            new Message_1.default("user@domain.com", "user@domain.com", "1", "body"),
+        ];
+        var lastWorkerAttempted = false;
+        var worker = new TestableWorker(dataStorage, [
+            new SendAdapter_1.default(function (message, resolve, reject) { return reject(); }),
+            new SendAdapter_1.default(function (message, resolve, reject) { return resolve(); }),
+            new SendAdapter_1.default(function (message, resolve, reject) {
+                lastWorkerAttempted = true;
+                reject();
+            }),
+        ]);
+        worker.doRun = true;
+        return worker.run().then(function () {
+            assert(dataStorage.putInput.length === 1, "The message should be put to datastorage.");
+            assert(dataStorage.putInput[0].sendStatus === SendStatus_1.default.Sent, "Message should get send status 'Sent'.");
+            assert(!lastWorkerAttempted, "The last worker should not be attempted.");
+        }, function () {
+            assert(false, "No pending messages found.");
+        });
     });
 });

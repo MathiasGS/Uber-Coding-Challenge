@@ -69,11 +69,10 @@ export default class Worker {
 
         // Attempt to retrieve a batch of messages of the provided size
         // We may not be able to claim as many messages as we wish to
-        this.dataStorage.retrievePending(this.uuid, process.env.WORKER_BATCH_SIZE).then(pending => {
+        return this.dataStorage.retrievePending(this.uuid, process.env.WORKER_BATCH_SIZE).then(pending => {
             // The promise interface only allow to wait for all fulfills or one rejects
             // We need to wait for all fulfilling or rejecting
             let inProgress: Promise<any>[] = [];
-            this.log("Got " + pending.length + " promises");
             for (let promise of pending) {
                 inProgress.push(new Promise((resolve) => {
                     promise.then((message: Message) => {
@@ -86,11 +85,10 @@ export default class Worker {
                 }));
             }
 
-            Promise.all(inProgress).then(() => {
+            return Promise.all(inProgress).then(() => {
                 this.run();
             });
         }, () => {
-            this.log("Got no promises");
             if (this.pending) {
                 // No pending retrieved, but notified of pending work                
                 this.run();
