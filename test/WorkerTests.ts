@@ -79,7 +79,7 @@ describe("Worker Tests", () => {
         });
     });
 
-    it("trySend tries all and then rejects.", () => {
+    it("trySend tries all adapters and then rejects.", () => {
         let dataStorage = new MockDataStorage();
         dataStorage.pendingMessages = [
             new Message("user@domain.com", "user@domain.com", "1", "body"),

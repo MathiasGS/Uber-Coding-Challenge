@@ -18,7 +18,7 @@ export default function SendHandler(dataStorage: IDataStorage, notifyWorkers: ()
             return;
         }
 
-        dataStorage.put(message).then(uuid => {
+        return dataStorage.put(message).then(uuid => {
             notifyWorkers();
             res.send({
                 uuid: uuid,

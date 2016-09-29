@@ -22,7 +22,7 @@ Due to time constraints, there are many interesting topics for further work, a f
 ### Security
 I have focused on using external components with a large user base to justify basic reliability and security. Dependencies are scanned for known vulnerabilities using snyk.io.
 
-[![Known Vulnerabilities](https://snyk.io/test/github/mathiasgs/uber-coding-challenge/958f822988cad82e57f73ddcbc93baa049c085d0/badge.svg)](https://snyk.io/test/github/mathiasgs/uber-coding-challenge/958f822988cad82e57f73ddcbc93baa049c085d0)
+[![Known Vulnerabilities](https://snyk.io/test/github/mathiasgs/uber-coding-challenge/badge.svg)](https://snyk.io/test/github/mathiasgs/uber-coding-challenge)
 
 An obvious neglection in the solution is the use of HTTPS. I have not prioritized this due to time constrains, but would have set up the Azure deployment to automatically renew and use certificates from Let's Encrypt (which I have done for one of my hobby projects: homeio.net). As this is a matter of configuration, I considered it a non-priority.
 
@@ -87,3 +87,7 @@ Experience: I have used Azure Table Storage in a couple of hobby projects.
 - The project may be run locally using "sudo npm start".
 
 The /build folder containes a precompiled version of the project. This folder is included to facilitate automatic deployment to Azure.
+
+# Testing
+Some automated unit- and integration tests can be found in /test. The tests can be executed using "npm run test". No automated testing has been implemented for the frontend.
+

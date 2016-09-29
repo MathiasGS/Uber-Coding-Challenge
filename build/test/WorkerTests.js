@@ -66,7 +66,7 @@ describe("Worker Tests", function () {
             assert(false, "No pending messages found.");
         });
     });
-    it("trySend tries all and then rejects.", function () {
+    it("trySend tries all adapters and then rejects.", function () {
         var dataStorage = new DataStorage_1.default();
         dataStorage.pendingMessages = [
             new Message_1.default("user@domain.com", "user@domain.com", "1", "body"),

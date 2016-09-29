@@ -2,7 +2,7 @@
 var restify = require("restify");
 function SendHandler(dataStorage) {
     return function (req, res, next) {
-        dataStorage.get(req.params.uuid).then(function (message) {
+        return dataStorage.get(req.params.uuid).then(function (message) {
             res.send(message);
         }, function (error) {
             res.status(400);

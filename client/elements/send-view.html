@@ -16,9 +16,9 @@
 
   <template>
     <validator-element type="email" validator-name="emailValidator"></validator-element>
-    <paper-input id="from" type="text" label="Sender address" value="{{from}}" validator="emailValidator" auto-validate invalid="{{fromInvalid}}"></paper-input>
-    <paper-input id="to" type="text" label="Recipient address" value="{{to::input}}" validator="emailValidator" auto-validate invalid="{{toInvalid}}"></paper-input>
-    <paper-input id="subject" type="text" label="Subject" value="{{subject::input}}"></paper-input>
+    <paper-input id="from" type="text" label="Sender address" value="{{from}}" validator="emailValidator" auto-validate invalid="{{fromInvalid}}" on-input="triggerLabelRepositioning"></paper-input>
+    <paper-input id="to" type="text" label="Recipient address" value="{{to::input}}" validator="emailValidator" auto-validate invalid="{{toInvalid}}" on-input="triggerLabelRepositioning"></paper-input>
+    <paper-input id="subject" type="text" label="Subject" value="{{subject::input}}" on-input="triggerLabelRepositioning"></paper-input>
     <wysiwyg-element id="body" value="{{body}}"></wysiwyg-element>
 
     <iron-ajax id="sendRequest" url="/api/v1/send" method="POST" body="{{computeApiRequestParams(from, to, subject, body)}}"
@@ -73,6 +73,11 @@
       computeIsSendingEnabled: function(isSending, fromInvalid, toInvalid){
         // paper-input are "valid" until validated on change, hence check for undefined
         return !(isSending || fromInvalid || toInvalid) && this.from !== undefined && this.to !== undefined;
+      },
+
+      triggerLabelRepositioning: function(event){
+        // XXX Workaround for Chrome to force refloat of label on input
+        event.target.fire("blur");
       },
 
       doSend: function(){

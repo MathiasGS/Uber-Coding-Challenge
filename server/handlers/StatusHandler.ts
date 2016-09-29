@@ -10,7 +10,7 @@ import IDataStorage from "../storage/IDataStorage";
  */
 export default function SendHandler(dataStorage: IDataStorage) {
     return (req: any, res: any, next: any) => {
-        dataStorage.get(req.params.uuid).then((message: Message) => {
+        return dataStorage.get(req.params.uuid).then((message: Message) => {
             res.send(message);
         }, error => {
             res.status(400);

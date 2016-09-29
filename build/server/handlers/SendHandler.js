@@ -9,7 +9,7 @@ function SendHandler(dataStorage, notifyWorkers) {
             res.send("Invalid input.");
             return;
         }
-        dataStorage.put(message).then(function (uuid) {
+        return dataStorage.put(message).then(function (uuid) {
             notifyWorkers();
             res.send({
                 uuid: uuid,
