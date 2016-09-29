@@ -1,18 +1,10 @@
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var azure = require("azure-storage");
 var Promise = require("promise");
 var uuid = require("uuid");
 var Message_1 = require("../Message");
-var DataStorage_1 = require("./DataStorage");
-var AzureDataStorage = (function (_super) {
-    __extends(AzureDataStorage, _super);
+var AzureDataStorage = (function () {
     function AzureDataStorage() {
-        _super.call(this);
         this.tableSvc = azure.createTableService();
         this.entGen = azure.TableUtilities.entityGenerator;
         this.tableSvc.createTableIfNotExists(AzureDataStorage.tableName, function (error) {
@@ -104,6 +96,6 @@ var AzureDataStorage = (function (_super) {
     };
     AzureDataStorage.tableName = "messages";
     return AzureDataStorage;
-}(DataStorage_1.default));
+}());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = AzureDataStorage;

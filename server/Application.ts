@@ -3,7 +3,7 @@ let restify = require("restify");
 import ClientFileHandler from "./handlers/ClientFileHandler";
 import SendHandler from "./handlers/SendHandler";
 import StatusHandler from "./handlers/StatusHandler";
-import DataStorage from "./storage/DataStorage";
+import IDataStorage from "./storage/IDataStorage";
 
 /**
  * Backend server class
@@ -22,7 +22,7 @@ export default class Server {
      * 
      * @memberOf Server
      */
-    constructor(private dataStorage: DataStorage, private notifyWorkers: () => void) {
+    constructor(private dataStorage: IDataStorage, private notifyWorkers: () => void) {
         let options = {
             name: "Uber Code Challenge Server",
         };

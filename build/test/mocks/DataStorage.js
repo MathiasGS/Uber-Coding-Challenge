@@ -1,17 +1,9 @@
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var Promise = require("promise");
 var Message_1 = require("../../server/Message");
-var DataStorage_1 = require("../../server/storage/DataStorage");
-var MockDataStorage = (function (_super) {
-    __extends(MockDataStorage, _super);
+var MockDataStorage = (function () {
     function MockDataStorage() {
         var _this = this;
-        _super.apply(this, arguments);
         this.putInput = [];
         this.getInput = [];
         this.retrievePendingInput = [];
@@ -44,6 +36,6 @@ var MockDataStorage = (function (_super) {
         });
     };
     return MockDataStorage;
-}(DataStorage_1.default));
+}());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = MockDataStorage;

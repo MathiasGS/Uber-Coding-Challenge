@@ -1,9 +1,9 @@
 let Promise = require("promise");
 
 import Message from "../../server/Message";
-import DataStorage from "../../server/storage/DataStorage";
+import IDataStorage from "../../server/storage/IDataStorage";
 
-export default class MockDataStorage extends DataStorage {
+export default class MockDataStorage implements IDataStorage {
     public putInput: Message[] = [];
     public getInput: String[] = [];
     public retrievePendingInput: String[] = [];

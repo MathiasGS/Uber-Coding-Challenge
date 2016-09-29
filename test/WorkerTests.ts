@@ -1,7 +1,6 @@
 let assert = require("chai").assert;
 let cluster = require("cluster");
 
-import DataStorage from "../server/storage/DataStorage";
 import Message from "../server/Message";
 import Worker from "../server/Worker";
 import MockDataStorage from "./mocks/DataStorage";

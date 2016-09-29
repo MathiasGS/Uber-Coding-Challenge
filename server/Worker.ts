@@ -3,7 +3,7 @@ let uuid = require("uuid");
 import IMailServiceAdapter from "./mailservices/IMailServiceAdapter";
 import Message from "./Message";
 import SendStatus from "./SendStatus";
-import DataStorage from "./storage/DataStorage";
+import IDataStorage from "./storage/IDataStorage";
 
 /**
  * Mail sending worker.
@@ -25,7 +25,7 @@ export default class Worker {
      * 
      * @memberOf Worker
      */
-    constructor(private dataStorage: DataStorage, private services: IMailServiceAdapter[]) {
+    constructor(private dataStorage: IDataStorage, private services: IMailServiceAdapter[]) {
         this.log("Starting.");
 
         if (this.services.length === 0) {

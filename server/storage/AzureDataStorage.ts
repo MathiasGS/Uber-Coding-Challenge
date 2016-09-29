@@ -3,7 +3,7 @@ let Promise = require("promise");
 let uuid = require("uuid");
 
 import Message from "../Message";
-import DataStorage from "./DataStorage";
+import IDataStorage from "./IDataStorage";
 
 /**
  * Azure Data Storage (Table Storage) implementation.
@@ -12,15 +12,13 @@ import DataStorage from "./DataStorage";
  * @class AzureDataStorage
  * @extends {DataStorage}
  */
-export default class AzureDataStorage extends DataStorage {
+export default class AzureDataStorage implements DataStorage {
     private static tableName = "messages";
 
     private tableSvc = azure.createTableService();
     private entGen = azure.TableUtilities.entityGenerator;
 
     constructor() {
-        super();
-
         // Ensure table exists
         this.tableSvc.createTableIfNotExists(AzureDataStorage.tableName, (error: any) => {
             if (error) {
