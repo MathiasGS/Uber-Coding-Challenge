@@ -8,7 +8,7 @@
 
 <dom-module id="send-view">
   <style include="iron-flex iron-flex-alignment">
-    paper-button:not(disabled) {
+    paper-button:not([disabled]) {
       color: white;
       background-color: var(--paper-blue-500);
     }
@@ -16,10 +16,10 @@
 
   <template>
     <validator-element type="email" validator-name="emailValidator"></validator-element>
-    <paper-input name="from" type="text" label="Sender address" value="{{from::input}}" validator="emailValidator" auto-validate invalid="{{fromInvalid}}"></paper-input>
-    <paper-input name="to" type="text" label="Recipient address" value="{{to::input}}" validator="emailValidator" auto-validate invalid="{{toInvalid}}"></paper-input>
-    <paper-input name="subject" type="text" label="Subject" value="{{subject::input}}"></paper-input>
-    <wysiwyg-element value="{{body}}"></wysiwyg-element>
+    <paper-input id="from" type="text" label="Sender address" value="{{from}}" validator="emailValidator" auto-validate invalid="{{fromInvalid}}"></paper-input>
+    <paper-input id="to" type="text" label="Recipient address" value="{{to::input}}" validator="emailValidator" auto-validate invalid="{{toInvalid}}"></paper-input>
+    <paper-input id="subject" type="text" label="Subject" value="{{subject::input}}"></paper-input>
+    <wysiwyg-element id="body" value="{{body}}"></wysiwyg-element>
 
     <iron-ajax id="sendRequest" url="/api/v1/send" method="POST" body="{{computeApiRequestParams(from, to, subject, body)}}"
       content-type="application/json" handle-as="json" on-response="sendCompleted" on-error="sendError" loading="{{isSending}}"></iron-ajax>
