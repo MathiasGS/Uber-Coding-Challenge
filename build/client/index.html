@@ -29581,7 +29581,7 @@ Command                                 | Mac Shortcut                          
   </script>
 </dom-module><dom-module id="send-view" assetpath="elements/">
   <style include="iron-flex iron-flex-alignment">
-    paper-button {
+    paper-button:not(disabled) {
       color: white;
       background-color: var(--paper-blue-500);
     }
@@ -29643,6 +29643,7 @@ Command                                 | Mac Shortcut                          
       },
 
       computeIsSendingEnabled: function(isSending, fromInvalid, toInvalid){
+        // paper-input are "valid" until validated on change, hence check for undefined
         return !(isSending || fromInvalid || toInvalid) && this.from !== undefined && this.to !== undefined;
       },
 
@@ -29838,7 +29839,7 @@ exports.default = SendStatus;
       computeStatusLabel: function(status) {
         switch(status){
           case -1:  // Loading
-            return "Loding...";
+            return "Loading...";
           case SendStatus.Pending: // Pending
             return "Pending delivery...";
           case SendStatus.Sent: // Sent
