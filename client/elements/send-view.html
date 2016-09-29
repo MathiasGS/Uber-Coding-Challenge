@@ -16,8 +16,7 @@
 
   <template>
     <validator-element type="email" validator-name="emailValidator"></validator-element>
-    <paper-input name="from" type="text" label="Sender address" value="{{from::input}}" validator="emailValidator"
-      auto-validate invalid="{{fromInvalid}}"></paper-input>
+    <paper-input name="from" type="text" label="Sender address" value="{{from::input}}" validator="emailValidator" auto-validate invalid="{{fromInvalid}}"></paper-input>
     <paper-input name="to" type="text" label="Recipient address" value="{{to::input}}" validator="emailValidator" auto-validate invalid="{{toInvalid}}"></paper-input>
     <paper-input name="subject" type="text" label="Subject" value="{{subject::input}}"></paper-input>
     <wysiwyg-element value="{{body}}"></wysiwyg-element>
@@ -72,6 +71,7 @@
       },
 
       computeIsSendingEnabled: function(isSending, fromInvalid, toInvalid){
+        // paper-input are "valid" until validated on change, hence check for undefined
         return !(isSending || fromInvalid || toInvalid) && this.from !== undefined && this.to !== undefined;
       },
 
