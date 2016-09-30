@@ -61,12 +61,12 @@ This architecture is designed specifically to meet the goals of:
 - Availability: limited work done by REST interface servers and simple to load balance with more servers.
 - Responsiveness: the response of the REST service does not depend on a number of (unreliable and slow) outgoing HTTP requests.
 - Reliability: even when all mail sending services are down, we can receive mail requests.
-- Scaleability: REST interface servers and mail sending workers can be scaled vertically and independently (with load balancing required for REST interface servers).
+- Scaleability: REST interface servers and mail sending workers can be scaled horizontally and independently (with load balancing required for REST interface servers).
 
 ### Mail Sending Workers
 A number of workers are put to work performing the actual sending of messages pending in the datastorage.
 
-Workers are designed to handle concurrent races for pending messages, hence vertical scaling of worker nodes can be achieved with no coordination and is done simply by adding more instances.
+Workers are designed to handle concurrent races for pending messages, hence horizontal scaling of worker nodes can be achieved with no coordination and is done simply by adding more instances.
 
 This architecture also enables adding more resilience to the solution, e.g. by retrying sending at a later time if all mail sending services are down (in the current implementation, due to time constraints and scope, all services down/failing at time of sending equals rejection).
 
