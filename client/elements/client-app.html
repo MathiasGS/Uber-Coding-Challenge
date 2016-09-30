@@ -8,12 +8,7 @@
 <link rel="import" href="status-view.html">
 
 <dom-module id="client-app">
-  <style include="iron-flex iron-flex-alignment">
-    :host {
-      display: block;
-      height: 100vh;
-    }
-    
+  <style include="iron-flex iron-flex-alignment">    
     body {
       @apply(--layout-inline);
       @apply(--layout-center-center);
@@ -29,21 +24,17 @@
       line-height: 60px;
       padding: 50px 75px 50px 10px;
       color: white;
-      transition: height 0.2s;
       background-color: var(--paper-blue-500);
     }
     
     .content {
       background: white;
-    }
-    
-    .cover {
       padding: 10px;
       @apply(--shadow-elevation-2dp);
     }
     
     @media (min-width: 768px) {
-      .cover {
+      .content {
         margin: -90px 60px 120px;
       }
     }
@@ -57,7 +48,7 @@
             alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a>
       </div>
 
-      <div class="content cover">
+      <div class="content">
         <app-location route="{{route}}" use-hash-as-path></app-location>
         <app-route route="{{route}}" pattern=":uuid" data="{{data}}" active="{{statusViewActive}}">
           <template is="dom-if" if="{{statusViewActive}}">
