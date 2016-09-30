@@ -34,7 +34,7 @@ The solution is designed with a strong client-server achitecture as required in 
 - Data storage: Azure Table Storage
 
 ## Frontend
-The frontend is implemented as a Polymer application. Polymer is developed, used and maintained by Google, which justified reliability assumptions, and provides a number of components for quickly building modern web applications.
+The frontend is implemented as a Polymer application. Polymer is developed, used and maintained by Google, which justifies basic reliability assumptions. It provides a number of components for quickly building modern web applications.
 Limited responsiveness was added to the layout to accommodate mobile devices.
 An OTS WYSIWYG-editor was used, but is encapsulated in a custom element to allow subsequent replacement. Manuel testing showed some reliability issues with this, particularly on Chrome and IE. Due to time constraints, I have not investigated a more robust alternative (or made one from scratch).
 
@@ -45,7 +45,7 @@ Relevant files to review: /client/elements.
 Experience: I have used Polymer for a couple of hobby projects.
 
 ## Backend
-NodeJS, providing event-driven and non-blocking I/O by design, is a good candidate for handling a large amount of incoming and outgoing connections. 
+NodeJS, providing event-driven and non-blocking I/O by design, is a good candidate for handling a large amount of incoming and outgoing connections.
 TypeScript provides improved code structure and readability compared to JavaScript.
 
 Relevant files to review: /server (except /server/typings).
@@ -58,13 +58,13 @@ The backend provides a REST interface for the frontend to send messages and retr
 The REST interface servers persist and retrieve messages from the data storage, but do not perform the actual sending. This task is performed by mail service workers.
 
 This architecture is designed specifically to meet the goals of:
-- Availability: limited work done by REST interface servers and simple to load balance with more servers,
-- Responsiveness: the response of the REST service does not depend on a number of (unreliable and slow) outgoing HTTP requests, and 
-- Reliability: even when all mail sending services are down, we can receive mail requests, 
+- Availability: limited work done by REST interface servers and simple to load balance with more servers.
+- Responsiveness: the response of the REST service does not depend on a number of (unreliable and slow) outgoing HTTP requests.
+- Reliability: even when all mail sending services are down, we can receive mail requests.
 - Scaleability: REST interface servers and mail sending workers can be scaled vertically and independently (with load balancing required for REST interface servers).
 
 ### Mail Sending Workers
-A number of workers are put to work performing the actual sending of messages queued in the datastorage.
+A number of workers are put to work performing the actual sending of messages pending in the datastorage.
 
 Workers are designed to handle concurrent races for pending messages, hence vertical scaling of worker nodes can be achieved with no coordination and is done simply by adding more instances.
 
@@ -90,4 +90,4 @@ The /build folder containes a precompiled version of the project. This folder is
 # Testing
 Some automated tests can be found in /test. The tests can be executed using "npm run test". No automated testing has been implemented for the frontend. There is obviously room for additional testing, in particular it would be relevant to test the Azure Table Storage adapter (which can be achieved using the Azure Storage Emulator) and the mail sending adapters.
 
-Manual testing in various browsers has been performed. Safari and Firefox passed. Chrome shows issues with the input elements and the WYSIWYG editor. As I do no 
+Basic manual testing in various browsers has been performed on a Mac and using browserstack.com. Safari and Firefox passed. Chrome and IE showed an issue related to event handling on Polymer input elements and issues with the WYSIWYG editor (e.g. backspace not working as intended). A workaround has been implemented for the input element issue, the WYSIWYG editor problems have not been adressed due to time constraints.
