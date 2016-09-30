@@ -24,7 +24,7 @@ I have focused on using external components with a large user base to justify ba
 
 [![Known Vulnerabilities](https://snyk.io/test/github/mathiasgs/uber-coding-challenge/badge.svg)](https://snyk.io/test/github/mathiasgs/uber-coding-challenge)
 
-An obvious neglection in the solution is not to use HTTPS. I have not prioritized configuration of this due to time constrains, but would have set up the Azure deployment to automatically renew and use certificates from Let's Encrypt (which I have done for one of my hobby projects: homeio.net). As this is primarily a matter of configuration, I considered it a non-priority.
+An obvious neglection in the solution is not to use HTTPS. I have not prioritized configuration of this due to time constrains, but would have set up the Azure deployment to automatically renew and use certificates from Let's Encrypt (which I have done for one of my hobby projects: https://homeio.net). As this is primarily a matter of configuration, I considered it a non-priority.
 
 # Architecture and Design
 The solution is designed with a strong client-server achitecture as required in the challenge. Primarily, it consists of the following parts implemented using the outlined technologies:
