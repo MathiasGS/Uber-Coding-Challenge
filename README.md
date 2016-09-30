@@ -1,7 +1,5 @@
 # Uber Coding Challenge: Email Service
-Overall, I believe this architecture provides a scaleable base designed with high availability, which was a goal of the solution, although it comes with the drawback of added complexity.
-
-Build a reliable email sending service which is capable of quickly switching between email service providers if one goes down.
+Challenge: Build a reliable email sending service which is capable of quickly switching between email service providers if one goes down.
 
 In my interpretation, this challenge is about ensuring reliable email sending, even if a service goes down, quotas are exceeded etc. To meet this criterion, this solution is designed to be scaleable, available and resilient to mail service outages.
 
@@ -13,81 +11,83 @@ I have chosen the fullstack track in order to show off both frontend and backend
 The project is hosted on Azure: http://ubercodingchallenge.azurewebsites.net.
 
 ## Further Work
-Due to time constraints, there are many interesting topics for further work, a few of which include:
+Due to time constraints, there are many remaining topics for further work, a few of which include:
 
 - Adding telemetry. Particularly useful for scaling workers.
 - Error handling and improved robustness.
-- Performance callibration of workers (batch sizes, sleep durations, number of workers contra number of pending messages).
+- Performance tuning of workers (batch sizes, sleep durations, number of workers contra number of pending messages).
+- Find or build a better WYSIWYG editor.
+- Adding BCC to a monitored mailbox on all outgoing messages could be used to validate if messages are indeed delivered by third party.
 
 ### Security
-I have focused on using external components with a large user base to justify basic reliability and security. Dependencies are scanned for known vulnerabilities using snyk.io.
+I have focused on using external components with a large user base to justify basic reliability and security assumptions. Dependencies are scanned for known vulnerabilities using snyk.io.
 
 [![Known Vulnerabilities](https://snyk.io/test/github/mathiasgs/uber-coding-challenge/badge.svg)](https://snyk.io/test/github/mathiasgs/uber-coding-challenge)
 
-An obvious neglection in the solution is the use of HTTPS. I have not prioritized this due to time constrains, but would have set up the Azure deployment to automatically renew and use certificates from Let's Encrypt (which I have done for one of my hobby projects: homeio.net). As this is a matter of configuration, I considered it a non-priority.
+An obvious neglection in the solution is not to use HTTPS. I have not prioritized configuration of this due to time constrains, but would have set up the Azure deployment to automatically renew and use certificates from Let's Encrypt (which I have done for one of my hobby projects: homeio.net). As this is primarily a matter of configuration, I considered it a non-priority.
 
 # Architecture and Design
-The solution is designed with a strong client-server achitecture as required in the challenge. Primarily, is consists of the following parts implemented using the outlined technologies:
+The solution is designed with a strong client-server achitecture as required in the challenge. Primarily, it consists of the following parts implemented using the outlined technologies:
 
 - Frontend: Polymer,
 - Backend: NodeJS and TypeScript,
 - Data storage: Azure Table Storage
 
 ## Frontend
-The frontend is implemented as a Polymer application. Polymer is efficient at building modern web applications quickly and with a high degree of reuse of external components, which was particularly useful given the time constraints. 
+The frontend is implemented as a Polymer application. Polymer is developed, used and maintained by Google, which justified reliability assumptions, and provides a number of components for quickly building modern web applications.
 Limited responsiveness was added to the layout to accommodate mobile devices.
-An OTS WYSIWYG-editor was used, but is encapsulated in a custom element to allow subsequent replacement.
+An OTS WYSIWYG-editor was used, but is encapsulated in a custom element to allow subsequent replacement. Manuel testing showed some reliability issues with this, particularly on Chrome and IE. Due to time constraints, I have not investigated a more robust alternative (or made one from scratch).
 
-Basic vulcanize-ation is applied to ensure acceptable load time of the application by combining imported files (alternatively there would be a large number of HTTP requests which would only be triggered when the importer is parsed at the client). Further improvements can be achieved e.g. with aditional minification, by serving the files using a caching proxy like nginx, considering the cache headers or using HTTP/2 Server Push. I have not focused on this part in my solution.
+Basic vulcanize-ation is applied to ensure acceptable load time of the application by combining imported files (alternatively, there would be a large number of HTTP requests which would only be triggered when the importer is parsed or used at the client, introducing a lot of latency). Further improvements can be achieved e.g. with aditional minification, by serving the files using a fast, caching proxy like nginx, optimizing caching or using HTTP/2 Server Push. I have not focused particularly on this part in my solution.
 
 Relevant files to review: /client/elements.
 
 Experience: I have used Polymer for a couple of hobby projects.
 
 ## Backend
-NodeJS, being event-driven and asynchronous by design, is a good candidate for handling a large amount if incoming and outgoing connections. 
-TypeScript provides a better structure to development by providing e.g. OOP and more elaborate language features on top of JavaScript.
+NodeJS, providing event-driven and non-blocking I/O by design, is a good candidate for handling a large amount of incoming and outgoing connections. 
+TypeScript provides improved code structure and readability compared to JavaScript.
 
 Relevant files to review: /server (except /server/typings).
 
 Experience: I have used TypeScript professionally and used NodeJS for a couple of hobby projects.
 
-The backend consists of three parts in order to meet the goal of scalability and availability:
-
-### Serving of Frontend
-This part has not been given particular focus as previously argued.
-
 ### REST Interface for Frontend Interaction
 The backend provides a REST interface for the frontend to send messages and retrieve status of messages based on UUIDs.
 
-The REST interface handlers persist and retrieve messages from the data storage, but do not perform the actual sending.
-This design decission is made to ensure availability and reliability (even when all mail sending services are down) and responsiveness so that the response of the REST service does not rely on a number of (unreliable and slow) outgoing HTTP requests to return a response.
+The REST interface servers persist and retrieve messages from the data storage, but do not perform the actual sending. This task is performed by mail service workers.
+
+This architecture is designed specifically to meet the goals of:
+- Availability: limited work done by REST interface servers and simple to load balance with more servers,
+- Responsiveness: the response of the REST service does not depend on a number of (unreliable and slow) outgoing HTTP requests, and 
+- Reliability: even when all mail sending services are down, we can receive mail requests, 
+- Scaleability: REST interface servers and mail sending workers can be scaled vertically and independently (with load balancing required for REST interface servers).
 
 ### Mail Sending Workers
-A number of workers are put to work performing the actual sending of messages queued in the datastorage. 
+A number of workers are put to work performing the actual sending of messages queued in the datastorage.
 
-A benefit of this architecture is the ability to vertically scale the number of workers and REST interface servers independently. Workers can be added quickly and effortlessly on new hosts to achieve higher throughput.
-Another benefit of this design is the ability to add even more resilience, e.g. retry sending at a later time if all mail sending services are down (in the current implementation, due to time constraints and scope, all services down/failing at time of sending equals rejection).
+Workers are designed to handle concurrent races for pending messages, hence vertical scaling of worker nodes can be achieved with no coordination and is done simply by adding more instances.
+
+This architecture also enables adding more resilience to the solution, e.g. by retrying sending at a later time if all mail sending services are down (in the current implementation, due to time constraints and scope, all services down/failing at time of sending equals rejection).
 
 Notification of workers from the send handler is implemented to reduce latency in cases where all (local) workers are sleeping due to lack of work.
 
-Overall, I believe this architecture provides a scaleable designed with high availability, which was a goal of the solution, and without introducing unreasonable latency in sending the mails. The design does however come with the drawback of added complexity, primarily due to the decoupled nature and parallelization of workers in the design.
-
 ## Data Storage
-I picked Azure Table Storage based on the assumption that it is required to always be able to tell if a message is sent (messages and send status are persisted) and because it provided the necessary capabilities with regards to locking for concurrent workers (email sending is not idempotent!).
+Azure Table Storage is used based on the assumption that it is required to always be able to tell if a message is sent (messages and send status are persisted) and because it provided the necessary capabilities with regards to locking for concurrent workers (email sending is not idempotent!).
 
-One may argue that e.g. a Queue-based storage might be relevant for this scenario. Due to time constraints and the assumed requirement to persist messages and send statuses this was not explored further. However, the data storage is isolated so that it is possible to replace the implementation at a later point in time.
+One may argue that e.g. a Queue-based storage might be relevant for this scenario. Due to time constraints and the assumed requirement to persist messages and send statuses, this was not explored further. However, the data storage is isolated so that it is possible to replace the implementation at a later point in time.
 
 Experience: I have used Azure Table Storage in a couple of hobby projects.
 
 # Build and Installation
 - Dependencies are installed with the installation script using "npm install".
-- Client vulcanization is executed using "npm run vulcanize".
 - TypeScript/server compilation can be executed using "npm run build".
+- Client vulcanization is executed using "npm run vulcanize".
 - The project may be run locally using "sudo npm start".
 
 The /build folder containes a precompiled version of the project. This folder is included to facilitate automatic deployment to Azure.
 
 # Testing
-Some automated unit- and integration tests can be found in /test. The tests can be executed using "npm run test". No automated testing has been implemented for the frontend.
+Some automated tests can be found in /test. The tests can be executed using "npm run test". No automated testing has been implemented for the frontend. There is obviously room for additional testing, in particular it would be relevant to test the Azure Table Storage adapter (which can be achieved using the Azure Storage Emulator) and the mail sending adapters.
 
+Manual testing in various browsers has been performed. Safari and Firefox passed. Chrome shows issues with the input elements and the WYSIWYG editor. As I do no 
