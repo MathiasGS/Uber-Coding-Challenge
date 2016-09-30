@@ -27,6 +27,9 @@ export default class Message {
      * @memberOf Message
      */
     public isValid(): Boolean {
-        return Validator.isEmail(this.from) && Validator.isEmail(this.to) && Validator.hasValue(this.subject) && Validator.hasValue(this.body);
+        return Validator.isEmail(this.from) &&
+            Validator.isEmail(this.to) &&
+            Validator.hasValue(this.subject) &&
+            Validator.hasValue(this.body);
     }
 }

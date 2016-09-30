@@ -16,7 +16,6 @@ import Worker from "./Worker";
  * The design allows for more elaborate performance tuning, which is however out of scope.
  */
 
-
 // We use Azure data storage as backend
 let dataStorage = new AzureDataStorage();
 

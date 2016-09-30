@@ -1,5 +1,4 @@
 let assert = require("chai").assert;
-let cluster = require("cluster");
 
 import Message from "../server/Message";
 import SendStatus from "../server/SendStatus";
